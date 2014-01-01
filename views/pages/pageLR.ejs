@@ -57,6 +57,7 @@ aria-hidden="true">
          
           <tbody id="modal-table-body">
             <!-- Prediction results will be dynamically added here -->
+           
           </tbody>
         </table>
       </div>
@@ -68,6 +69,7 @@ aria-hidden="true">
   const ordeSelect = document.getElementById("orde");
 const inputContainer = document.getElementById("input-container");
 const predictButton = document.getElementById("predict-button");
+
 
 // Menjalankan fungsi untuk menampilkan input orde secara default
 predictButton.addEventListener("click", predictLinearRegression);
@@ -128,6 +130,7 @@ updateInputFieldsLR();
 function predictLinearRegression() {
   const ordeValue = parseInt(ordeSelect.value);
   const tableBody = document.getElementById("modal-table-body");
+  
 
   const dataX = [];
   const dataY = [];
@@ -156,15 +159,15 @@ const jm= dataY.reduce((acc, x) => acc + x, 0);
 // Hitung rata-rata dari nilai x dan nilai y
 const meanX = dataX.reduce((acc, x) => acc + x, 0) / n;
 const meanY = dataY.reduce((acc, y) => acc + y, 0) / n;
-const pp = n + 1;
+const pp = 14;
 // Hitung b
 const b = (sumXY -( n * meanX * meanY)) / (sumXSquare - (n * meanX * meanX));
 
-console.log(b);
+// console.log(b);
 
   // Hitung perpotongan (a)
   const a = meanY - (b * meanX);
-
+  
   // Hitung nilai prediksi (y) untuk setiap data X
   // const predictedValues = DataX.map((x) => a + b * x);
   const predictedValues = Math.round(a + (b * pp));
@@ -186,6 +189,14 @@ console.log(b);
   }
 
   tableContent += `
+  <tr>
+              <td>kemiringan(b) </td>
+             <td id="b">${b}</td>
+            </tr>
+            <tr>
+              <td>potongan(a) </td>
+              <td id="a">${a}</td>
+            </tr>
     <tr>
       <td>total data</td>
       <td>${jm}</td>
@@ -194,9 +205,23 @@ console.log(b);
       <td>Hasil Prediski</td>
       <td>${predictedValues}</td>
     </tr>
+   
   `;
 
   tableBody.innerHTML = tableContent;
 }
 
+function bulan() {
+  const bulanValue = document.getElementById("bulan").value;
+  const hasil = document.getElementById("bulan");
+  const b = document.getElementById("b").innerHTML;
+  const a = document.getElementById("a").innerHTML
+  
+  const hh = Math.round(a + (b * bulanValue));
+  console.log(hh)
+  console.log(b)
+  console.log(a)
+  console.log(bulanValue)
+  hasil.innerHTML = hh;
+}
 </script>
