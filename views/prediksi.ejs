@@ -1,0 +1,94 @@
+<% layout('layouts/app') %>
+
+<div class="container">
+  <div class="row">
+    <div class="col py-3">
+      <p class="text-center">
+        Di sini Anda dapat melakukan perhitungan penjualan menggunakan metode
+        <b>Moving Average (MA)</b> untuk menganalisis data Anda. Terdapat 3
+        macam perhitungan yang mana menerapkan jumlah orde atau bulan yang
+        berbeda. Anda bisa menggunakan perhitungan dengan rentang waktu 3 orde,
+        5 orde, dan 7 orde.
+      </p>
+      <p class="text-center">
+        Silahkan masukkan data penjualan yang relevan di bawah ini, data yang
+        dimasukkan mulai dari data histori terakhir penjualan. Sesuaikan dengan
+        kebutuhan perhitungan orde Anda dan dapatkan hasil prediksi.
+      </p>
+    </div>
+  </div>
+
+  <div class="row wrap-content-prediksi">
+    <div class="col">
+      <div class="mb-3">
+        <label for="orde" class="form-label">Orde</label>
+        <select class="form-select" id="orde" name="orde">
+          <option value="3">3 Orde</option>
+          <option value="5">5 Orde</option>
+          <option value="7">7 Orde</option>
+        </select>
+      </div>
+
+      <form id="input-container" class="row needs-validation" novalidate>
+        <!-- Input penjualan di sini akan ditambahkan oleh JavaScript -->
+      </form>
+      <div class="text-center pt-3">
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="predict-button"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+        >
+          Prediksi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Hasil Prediksi</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="my-3">
+            <table class="table table-bordered table-warning">
+              <tbody>
+                <tr>
+                  <th class="col-7 table-info">Jumlah Orde</th>
+                  <td class="col-5" id="ordeTotal"></td>
+                </tr>
+                <tr>
+                  <th class="col-7 table-info">Total Seluruh Penjualan</th>
+                  <td class="col-5" id="totalPenjualan"></td>
+                </tr>
+                <tr>
+                  <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
+                  <td class="col-5" id="hasilPrediksi"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

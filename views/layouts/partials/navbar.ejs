@@ -1,0 +1,46 @@
+<nav
+  class="navbar navbar-expand-lg bg-dark sticky-top px-5 py-3"
+  data-bs-theme="dark"
+>
+  <div class="container-fluid">
+    <img src="/assets/k1-logo-512x512.png" alt="logo" class="logo" />
+    <a class="navbar-brand" href="/">PredicTeam</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link nav-text <%= activePage === 'home' ? 'active' : '' %>"
+            aria-current="page"
+            href="/"
+            >Beranda</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link <%= activePage === 'prediksi' ? 'active' : '' %>"
+            href="/prediksi"
+            >Prediksi</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link <%= activePage === 'tentang' ? 'active' : '' %>"
+            href="/tentang"
+            >Tentang</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

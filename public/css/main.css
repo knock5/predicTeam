@@ -1,0 +1,78 @@
+:root {
+  --primary: #bd4b4b;
+  --secondary: #efb7b7;
+  --dark: #000000;
+  --light: #eeeeee;
+}
+body {
+  font-family: "Poppins", sans-serif;
+}
+a {
+  text-decoration: none;
+}
+.logo {
+  width: 25px;
+  margin-right: 5px;
+}
+.navbar-brand,
+.nav-link {
+  font-weight: bold;
+  color: var(--secondary);
+  margin: 0 7px;
+}
+.bg-banner {
+  background-image: url("/assets/bruno-martins-OhJmwB4XWLE-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  position: relative;
+}
+.welcome-banner {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--secondary);
+  border-radius: 12px;
+}
+.wel-text {
+  color: var(--primary);
+}
+.text-banner {
+  color: var(--light);
+}
+.btn-banner {
+  background-color: var(--primary);
+  color: var(--light);
+  border: none;
+  border-radius: 12px;
+  padding: 11px 20px;
+}
+.btn-banner:hover {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+.active {
+  color: var(--primary) !important;
+  border: 1px solid var(--primary);
+  border-style: dashed;
+  border-radius: 20px;
+}
+.wrap-content-prediksi {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px 20px;
+  border-radius: 12px;
+  color: var(--secondary);
+}
+#predict-button {
+  background-color: var(--primary);
+  color: var(--light);
+  padding: 11px 18px;
+  border: none;
+}
+#predict-button:hover {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
