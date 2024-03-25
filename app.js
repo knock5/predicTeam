@@ -21,6 +21,9 @@ app.get("/", (req, res) => {
 app.get("/prediksi", (req, res) => {
   res.render("prediksi", { activePage: "prediksi" });
 });
+app.get("/prediksiWma", (req, res) => {
+  res.render("prediksiWma", { activePage: "Wma" });
+});
 
 app.get("/tentang", (req, res) => {
   res.render("tentang", { activePage: "tentang" });
