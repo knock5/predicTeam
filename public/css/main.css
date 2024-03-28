@@ -76,3 +76,86 @@ a {
   background-color: var(--secondary);
   color: var(--primary);
 }
+.exploreBtn {
+  background-color: var(--primary);
+  color: var(--light);
+  padding: 11px 18px;
+  border-radius: 12px;
+  border: none;
+}
+.exploreBtn:hover {
+  background-color: var(--primary);
+  color: var(--secondary);
+}
+.ftdevelop {
+  color: var(--primary) !important;
+}
+.label-coming-soon {
+  background-color: #00bc00;
+  color: var(--light);
+  padding: 5px;
+}
+
+/* card menu metode */
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+  cursor: pointer;
+}
+.card {
+  position: relative;
+  width: 200px;
+  height: 250px;
+  border-radius: 14px;
+  z-index: 1111;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+.bg {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 190px;
+  height: 240px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px);
+  border-radius: 10px;
+  overflow: hidden;
+  outline: 2px solid white;
+}
+.blob {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: #ff0000;
+  opacity: 1;
+  filter: blur(12px);
+  animation: blob-bounce 5s infinite ease;
+}
+
+@keyframes blob-bounce {
+  0% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate(-100%, -100%) translate3d(100%, 0, 0);
+  }
+  50% {
+    transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
+  }
+  75% {
+    transform: translate(-100%, -100%) translate3d(0, 100%, 0);
+  }
+  100% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+}

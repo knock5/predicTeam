@@ -3,12 +3,13 @@ const inputContainer = document.getElementById("input-container");
 const predictButton = document.getElementById("predict-button");
 
 // Menjalankan fungsi untuk menampilkan input orde secara default
-updateInputFields();
+updateInputFieldsMA();
 
-ordeSelect.addEventListener("change", updateInputFields);
+// prediksi page
+ordeSelect.addEventListener("change", updateInputFieldsMA);
 predictButton.addEventListener("click", predict);
 
-function updateInputFields() {
+function updateInputFieldsMA() {
   const ordeValue = parseInt(ordeSelect.value);
   inputContainer.innerHTML = "";
 
@@ -57,8 +58,10 @@ function predict() {
     }
   }
 
+  // hitung moving average (MA)
   // hitung total penjualan
   const total = data.reduce((acc, curr) => acc + curr, 0);
+  // hitung rata-rata penjualan
   const result = total / data.length;
   const toRoundedResult = Math.round(result);
 

@@ -22,6 +22,10 @@ app.get("/prediksi", (req, res) => {
   res.render("prediksi", { activePage: "prediksi" });
 });
 
+app.get("/menu", (req, res) => {
+  res.render("menu", { activePage: "prediksi" });
+});
+
 app.get("/tentang", (req, res) => {
   res.render("tentang", { activePage: "tentang" });
 });
