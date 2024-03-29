@@ -5,9 +5,234 @@
     <a href="/menu">
       <button class="btn btn-warning">Back</button>
     </a>
-  </div>
+    <div class="text-center mb-4">
+      <h1 class="mb-3">Welcome to WMA Calculator</h1>
+    </div>
+    <div class="row">
+      <div class="col border border border-2 rounded">
+        <p style="text-align: justify">
+          Selamat datang di program perhitungan<b>
+            Weighted Moving Average (WMA) </b
+          >kami! Dalam metode ini, sistem telah menentukan bobot untuk setiap
+          periode waktu, sehingga Anda dapat menganalisis data penjualan dengan
+          lebih akurat berdasarkan perhitungan yang telah disesuaikan. Program
+          ini menyediakan 3 jenis perhitungan berbeda dengan bobot yang telah
+          ditetapkan untuk rentang waktu 3, 5, dan 7 periode
+        </p>
+        <p style="text-align: justify">
+          Silakan masukkan data penjualan yang relevan di bawah ini, dimulai
+          dari data historis penjualan terbaru Anda. Sesuaikan dengan kebutuhan
+          perhitungan WMA Anda untuk mendapatkan hasil prediksi yang optimal.
+        </p>
+      </div>
+    </div>
+    <div class="row wrap-content-prediksi mt-3">
+      <div class="col">
+        <div class="mb-3">
+          <label for="orde" class="form-label">Orde</label>
+          <select class="form-select" id="orde" name="orde">
+            <option value="3">3 Orde</option>
+            <option value="5">5 Orde</option>
+            <option value="7">7 Orde</option>
+          </select>
+        </div>
 
-  <div class="py-3">
-    <h2>WMA Page</h2>
+        <form id="input-container" class="row needs-validation" novalidate>
+          <!-- Input penjualan di sini akan ditambahkan oleh JavaScript -->
+        </form>
+        <div class="text-center pt-3">
+          <!-- Button trigger modal -->
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="predict-button"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
+            disabled
+          >
+            Prediksi
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<div
+class="modal fade"
+id="staticBackdrop"
+data-bs-backdrop="static"
+data-bs-keyboard="false"
+tabindex="-1"
+aria-labelledby="staticBackdropLabel"
+aria-hidden="true"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="staticBackdropLabel">Hasil Prediksi WMA</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="my-3">
+        <table class="table table-bordered table-warning">
+          <tbody>
+            <tr>
+              <th class="col-7 table-info">Jumlah Orde</th>
+              <td class="col-5" id="ordeTotal"></td>
+            </tr>
+            <tr>
+              <th class="col-7 table-info">Total Seluruh Penjualan</th>
+              <td class="col-5" id="totalPenjualan"></td>
+            </tr>
+            <tr>
+              <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
+              <td class="col-5" id="hasilPrediksi"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+ 
+    const ordeSelect = document.getElementById("orde");
+    const inputContainer = document.getElementById("input-container");
+    const predictwmaButton = document.getElementById("predict-button");
+
+    // Menjalankan fungsi untuk menampilkan input orde secara default
+    predictwmaButton.addEventListener("click", predictWMA);
+    // prediksi page
+    ordeSelect.addEventListener("change", updateInputFieldsMA);
+
+    function updateInputFieldsMA() {
+      const ordeValue = parseInt(ordeSelect.value);
+      inputContainer.innerHTML = "";
+
+      for (let i = 1; i <= ordeValue; i++) {
+        const inputGroup = document.createElement("div");
+        inputGroup.classList.add("col-md-2", "mb-3");
+        inputGroup.innerHTML = `
+          <label for="data${i}" class="form-label">Penjualan-${i}</label>
+          <input type="text" min="0" class="form-control dataInput" id="data${i}" name="data${i}" required>
+          <div class="valid-feedback">
+            Okaii!
+          </div>
+          <div class="invalid-feedback">
+            Harap masukkan angka!
+          </div>
+        `;
+        inputContainer.appendChild(inputGroup);
+      }
+      const dataInputs1 = document.querySelectorAll(".dataInput");
+
+      // Ambil tombol Prediksi
+      const predictButton1 = document.getElementById("predict-button");
+
+      // Tambahkan event listener pada setiap input field
+      dataInputs1.forEach((input) => {
+        input.addEventListener("input", function () {
+          const inputValue = input.value.trim();
+
+          // Validasi input: pastikan input adalah angka
+          if (!inputValue.match(/^\d+$/)) {
+            input.classList.add("is-invalid");
+            input.classList.remove("is-valid");
+          } else {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+          }
+
+          // Cek apakah ada input field yang tidak valid atau kosong
+          const isValidInputs1 = Array.from(dataInputs).every((input) => {
+            const inputValue1 = input.value.trim();
+            return inputValue1 !== "" && inputValue1.match(/^\d+$/);
+          });
+
+          // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
+          predictButton1.disabled = !isValidInputs;
+        });
+      });
+    }
+    updateInputFieldsMA();
+
+    // Ambil semua input fields dengan class 'dataInput'
+    // Ambil semua input fields dengan class 'dataInput'
+    const dataInputs = document.querySelectorAll(".dataInput");
+
+    // Ambil tombol Prediksi
+    const predictButton = document.getElementById("predict-button");
+
+    // Tambahkan event listener pada setiap input field
+    dataInputs.forEach((input) => {
+      input.addEventListener("input", function () {
+        const inputValue = input.value.trim();
+
+        // Validasi input: pastikan input adalah angka
+        if (!inputValue.match(/^\d+$/)) {
+          input.classList.add("is-invalid");
+          input.classList.remove("is-valid");
+        } else {
+          input.classList.remove("is-invalid");
+          input.classList.add("is-valid");
+        }
+
+        // Cek apakah ada input field yang tidak valid atau kosong
+        const isValidInputs = Array.from(dataInputs).every((input) => {
+          const inputValue = input.value.trim();
+          return inputValue !== "" && inputValue.match(/^\d+$/);
+        });
+
+        // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
+        predictButton.disabled = !isValidInputs;
+        
+      });
+    });
+ 
+
+  function predictWMA() {
+  const ordeValue = parseInt(ordeSelect.value);
+  const ordeTotal = document.getElementById("ordeTotal");
+  const totalPenjualan = document.getElementById("totalPenjualan");
+  const hasilPrediksi = document.getElementById("hasilPrediksi");
+
+  const data = [];
+
+  for (let i = 1; i <= ordeValue; i++) {
+    const input = document.getElementById(`data${i}`);
+    if (input) {
+      data.push(parseInt(input.value) || 0);
+    }
+  }
+
+  // Mendefinisikan bobot berdasarkan periode yang dipilih
+  let weights = [];
+  if (ordeValue === 3) {
+    weights = [0.3, 0.5, 0.2]; // Bobot untuk 3 periode
+  } else if (ordeValue === 5) {
+    weights = [0.2, 0.3, 0.2, 0.1, 0.2]; // Bobot untuk 5 periode
+  } else if (ordeValue === 7) {
+    weights = [0.1, 0.15, 0.2, 0.15, 0.1, 0.15, 0.15]; // Bobot untuk 7 periode
+  }
+
+  // hitung weighted moving average
+  let weightedSum = 0;
+  for (let i = 0; i < weights.length && i < data.length; i++) {
+    weightedSum += data[data.length - 1 - i] * weights[i];
+  }
+  const totalSales = data.reduce((acc, curr) => acc + curr, 0);
+  const toRoundedResult = Math.round(weightedSum);
+
+  ordeTotal.innerText = `${ordeValue} Periode`;
+  totalPenjualan.innerText = totalSales;
+  hasilPrediksi.innerText = toRoundedResult;
+}
+</script>
