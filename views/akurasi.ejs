@@ -1,0 +1,54 @@
+<% layout('layouts/app') %> <% layout('layouts/app') %>
+
+<div class="container">
+  <div class="row py-3">
+    <div class="col">
+      <h1 class="text-center">Perhitungan Akurasi</h1>
+      <p style="text-align: justify">
+        Pada halaman ini Anda dapat melakukan perhitungan akurasi berdasarkan
+        data aktual penjualan dan data peramalan yang telah dibuat. Perhitungan
+        ini melibatkan 3 orde (bulan) untuk mencari sebuah akurasinya. Anda juga
+        dapat melakukan <b>input data baru, edit,</b> ataupun
+        <b>menghapus data</b> aktual penjualan sesuai dengan kebutuhan Anda.
+        Lakukan pehitungan akurasi dan dapatkan hasilnya agar Anda dapat
+        mengetahui seberapa akurat peramalan yang telah Anda buat.
+      </p>
+      <hr />
+    </div>
+
+    <div class="row py-2">
+      <h4>Input Data Aktual Penjualan</h4>
+    </div>
+  </div>
+
+  <!-- Tabel untuk menampilkan data penjualan -->
+  <div class="row justify-content-center">
+    <div class="col">
+      <h4>Data Aktual Penjualan</h4>
+      <% if (dataPenjualan && dataPenjualan.length > 0) { %>
+      <!-- Tampilkan tabel data penjualan -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Bulan</th>
+            <th scope="col">Penjualan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% dataPenjualan.forEach((item) => { %>
+          <tr>
+            <th scope="row"><%= item.id %></th>
+            <td><%= item.bulan %></td>
+            <td><%= item.penjualan %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <!-- Tampilkan pesan bahwa data penjualan tidak tersedia -->
+      <p>Data penjualan tidak tersedia.</p>
+      <% } %>
+    </div>
+  </div>
+</div>

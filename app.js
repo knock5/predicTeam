@@ -1,6 +1,11 @@
 const express = require("express");
 const ejsMate = require("ejs-mate");
 const path = require("path");
+const homeRoutes = require("./routes/homeRoutes");
+const akurasiRoutes = require("./routes/akurasiRoutes");
+const prediksiRoutes = require("./routes/prediksiRoutes");
+const tentangRoutes = require("./routes/tentangRoutes");
+const menuRoutes = require("./routes/menuRoutes");
 const app = express();
 
 const port = 8008;
@@ -14,33 +19,14 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // routes
-app.get("/", (req, res) => {
-  res.render("home", { activePage: "home" });
-});
-
-app.get("/prediksi", (req, res) => {
-  res.render("prediksi", { activePage: "prediksi" });
-});
-
-app.get("/tentang", (req, res) => {
-  res.render("tentang", { activePage: "tentang" });
-});
-
-app.get("/menu", (req, res) => {
-  res.render("menu", { activePage: "prediksi" });
-});
-
-app.get("/menuWMA", (req, res) => {
-  res.render("pages/pageWMA", { activePage: "prediksi" });
-});
-
-app.get("/menuES", (req, res) => {
-  res.render("pages/pageES", { activePage: "prediksi" });
-});
-
-app.get("/menuLR", (req, res) => {
-  res.render("pages/pageLR", { activePage: "prediksi" });
-});
+app.get("/", homeRoutes);
+app.get("/akurasi", akurasiRoutes);
+app.get("/prediksi", prediksiRoutes);
+app.get("/tentang", tentangRoutes);
+app.get("/menu", menuRoutes);
+app.get("/menuWMA", menuRoutes);
+app.get("/menuES", menuRoutes);
+app.get("/menuLR", menuRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

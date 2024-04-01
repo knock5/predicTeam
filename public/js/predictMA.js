@@ -2,7 +2,6 @@ const ordeSelect = document.getElementById("orde");
 const inputContainer = document.getElementById("input-container");
 const predictButton = document.getElementById("predict-button");
 
-// Menjalankan fungsi untuk menampilkan input orde secara default
 updateInputFieldsMA();
 
 // prediksi page
@@ -12,6 +11,7 @@ predictButton.addEventListener("click", predict);
 function updateInputFieldsMA() {
   const ordeValue = parseInt(ordeSelect.value);
   inputContainer.innerHTML = "";
+  predictButton.disabled = true;
 
   for (let i = 1; i <= ordeValue; i++) {
     const inputGroup = document.createElement("div");
@@ -28,6 +28,31 @@ function updateInputFieldsMA() {
       `;
     inputContainer.appendChild(inputGroup);
   }
+
+  // Menambahkan pendengar acara pada setiap input data
+  const dataInputs = document.querySelectorAll(".dataInput");
+  dataInputs.forEach((input) => {
+    input.addEventListener("input", validateInputs);
+  });
+}
+
+function validateInputs() {
+  const dataInputs = document.querySelectorAll(".dataInput");
+  let allValid = true;
+
+  dataInputs.forEach((input) => {
+    const inputValue = input.value.trim();
+    if (!inputValue.match(/^\d+$/)) {
+      input.classList.add("is-invalid");
+      input.classList.remove("is-valid");
+      allValid = false;
+    } else {
+      input.classList.remove("is-invalid");
+      input.classList.add("is-valid");
+    }
+  });
+
+  predictButton.disabled = !allValid;
 }
 
 function predict() {
@@ -38,25 +63,14 @@ function predict() {
 
   const data = [];
 
-  for (let i = 1; i <= ordeValue; i++) {
-    const input = document.getElementById(`data${i}`);
-
-    if (input) {
-      const inputValue = input.value.trim();
-
-      // Validasi input: pastikan input adalah angka
-      if (!inputValue.match(/^\d+$/)) {
-        input.classList.add("is-invalid");
-        input.classList.remove("is-valid");
-        return; // Hentikan eksekusi jika input tidak valid
-      } else {
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-      }
-
-      data.push(parseInt(inputValue) || 0);
+  // Dapatkan nilai dari setiap input data yang valid
+  const dataInputs = document.querySelectorAll(".dataInput");
+  dataInputs.forEach((input) => {
+    const inputValue = input.value.trim();
+    if (inputValue !== "") {
+      data.push(parseInt(inputValue));
     }
-  }
+  });
 
   // hitung moving average (MA)
   // hitung total penjualan
