@@ -46,54 +46,21 @@ function updateInputFieldsMA() {
       }
 
       // Cek apakah ada input field yang tidak valid atau kosong
-      const isValidInputs1 = Array.from(dataInputs).every((input) => {
-        const inputValue1 = input.value.trim();
-        return inputValue1 !== "" && inputValue1.match(/^\d+$/);
+      const isValidInputs1 = Array.from(dataInputs1).every((input) => {
+        const inputValue = input.value.trim();
+        return inputValue !== "" && inputValue.match(/^\d+$/);
       });
-
+      console.log(inputValue);
       // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
-      predictButton1.disabled = !isValidInputs;
+      predictButton1.disabled = !isValidInputs1;
     });
   });
 }
 updateInputFieldsMA();
 
-// Ambil semua input fields dengan class 'dataInput'
-const dataInputs = document.querySelectorAll(".dataInput");
-
-// Ambil tombol Prediksi
-const predictButton = document.getElementById("predict-button");
-
-// Tambahkan event listener pada setiap input field
-dataInputs.forEach((input) => {
-  input.addEventListener("input", function () {
-    const inputValue = input.value.trim();
-
-    // Validasi input: pastikan input adalah angka
-    if (!inputValue.match(/^\d+$/)) {
-      input.classList.add("is-invalid");
-      input.classList.remove("is-valid");
-    } else {
-      input.classList.remove("is-invalid");
-      input.classList.add("is-valid");
-    }
-
-    // Cek apakah ada input field yang tidak valid atau kosong
-    const isValidInputs = Array.from(dataInputs).every((input) => {
-      const inputValue = input.value.trim();
-      return inputValue !== "" && inputValue.match(/^\d+$/);
-    });
-
-    // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
-    predictButton.disabled = !isValidInputs;
-  });
-});
-
 function predictWMA() {
   const ordeValue = parseInt(ordeSelect.value);
-  const ordeTotal = document.getElementById("ordeTotal");
-  const totalPenjualan = document.getElementById("totalPenjualan");
-  const hasilPrediksi = document.getElementById("hasilPrediksi");
+  const tableBody = document.getElementById("modal-table-body");
 
   const data = [];
 
@@ -116,15 +83,40 @@ function predictWMA() {
 
   // hitung weighted moving average
   let weightedSum = 0;
+
+  let tableContent = "";
+
   for (let i = 0; i < weights.length && i < data.length; i++) {
     weightedSum += data[data.length - 1 - i] * weights[i];
+    tableContent += `
+    <tr>
+    <td class="col-7 table-info">Periode ${i + 1}</td>
+    <td>${data[data.length - 1 - i]}</td>
+    <td>${weights[i]}</td></tr>`;
   }
-
-  // penjumlahan total penjualan
   const totalSales = data.reduce((acc, curr) => acc + curr, 0);
   const toRoundedResult = Math.round(weightedSum);
+  let tableContent0 = `<tr>
+  <th class="col-7 table-info">Jumlah Orde</th>
+  <td class="col-5" colspan="2" >${ordeValue} Periode</td>
+  </td>
+</tr>
+<tr>
+<th class="col-7 table-info">Periode</th>
+                <th class="col-4 table-info">Data Pejualan</th>
+                <th class="col-2 table-info">Bobot</th>
+              </tr>
+`;
+  let tableContent1 = `
 
-  ordeTotal.innerText = `${ordeValue} Periode`;
-  totalPenjualan.innerText = totalSales;
-  hasilPrediksi.innerText = toRoundedResult;
+<tr>
+  <th class="col-7 table-info">Total Seluruh Penjualan</th>
+  <td class="col-5"  colspan="2">${totalSales}</td>
+</tr>
+<tr>
+  <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
+  <td class="col-5" colspan="2">${toRoundedResult}</td>
+</tr>`;
+
+  tableBody.innerHTML = tableContent0 + tableContent + tableContent1;
 }

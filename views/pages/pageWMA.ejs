@@ -26,6 +26,17 @@
           perhitungan berbeda dengan bobot yang telah ditetapkan untuk rentang
           waktu 3, 5, dan 7 periode
         </p>
+        div class="pb-3">
+        <p class="text-center">Rumus perhitungan WMA:</p>
+        <div class="row justify-content-center align-items-center gap-2">
+          <div class="col-md-5 text-center">
+            <img src="/assets/rumusWMA.png" alt="Rumus WMA" />
+          </div>
+          <div class="col-md-5 text-center">
+            <img src="/assets/ketWMA.png" class="w-75" alt="Detail Rumus WMA" />
+          </div>
+        </div>
+      </div>
         <p style="text-align: justify">
           Silakan masukkan data penjualan yang relevan di bawah ini, dimulai
           dari data historis penjualan terbaru Anda. Sesuaikan dengan kebutuhan
@@ -88,21 +99,9 @@
         ></button>
       </div>
       <div class="modal-body">
-        <div class="my-3">
+        <div class="my-3" >
           <table class="table table-bordered table-warning">
-            <tbody>
-              <tr>
-                <th class="col-7 table-info">Jumlah Orde</th>
-                <td class="col-5" id="ordeTotal"></td>
-              </tr>
-              <tr>
-                <th class="col-7 table-info">Total Seluruh Penjualan</th>
-                <td class="col-5" id="totalPenjualan"></td>
-              </tr>
-              <tr>
-                <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
-                <td class="col-5" id="hasilPrediksi"></td>
-              </tr>
+            <tbody id="modal-table-body">
             </tbody>
           </table>
         </div>
