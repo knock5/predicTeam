@@ -1,5 +1,4 @@
 <% layout('layouts/app') %>
-
 <div class="container">
   <div class="py-3">
     <div class="row py-3 justify-content-center align-items-center">
@@ -28,7 +27,7 @@
         </p>
         div class="pb-3">
         <p class="text-center">Rumus perhitungan WMA:</p>
-        <div class="row justify-content-center align-items-center gap-2">
+        <div class="row justify-content-center align-items-center gap-2 mb-3">
           <div class="col-md-5 text-center">
             <img src="/assets/rumusWMA.png" alt="Rumus WMA" />
           </div>
@@ -37,73 +36,73 @@
           </div>
         </div>
       </div>
-        <p style="text-align: justify">
-          Silakan masukkan data penjualan yang relevan di bawah ini, dimulai
-          dari data historis penjualan terbaru Anda. Sesuaikan dengan kebutuhan
-          perhitungan WMA Anda untuk mendapatkan hasil prediksi yang optimal.
-        </p>
-      </div>
+      <p style="text-align: justify">
+        Silakan masukkan data penjualan yang relevan di bawah ini, dimulai dari
+        data historis penjualan terbaru Anda. Sesuaikan dengan kebutuhan
+        perhitungan WMA Anda untuk mendapatkan hasil prediksi yang optimal.
+      </p>
     </div>
-    <div class="row wrap-content-prediksi mt-3">
-      <div class="col">
-        <div class="mb-3">
-          <label for="orde" class="form-label">Orde</label>
-          <select class="form-select" id="orde" name="orde">
-            <option value="3">3 Orde</option>
-            <option value="5">5 Orde</option>
-            <option value="7">7 Orde</option>
-          </select>
-        </div>
+  </div>
+  <div class="row wrap-content-prediksi mb-4 mt-1">
+    <div class="col">
+      <div class="mb-3">
+        <label for="orde" class="form-label">Orde</label>
+        <select class="form-select" id="orde" name="orde">
+          <option value="3">3 Orde</option>
+          <option value="5">5 Orde</option>
+          <option value="7">7 Orde</option>
+        </select>
+      </div>
 
-        <form id="input-container" class="row needs-validation" novalidate>
-          <!-- Input penjualan di sini akan ditambahkan oleh JavaScript -->
-        </form>
+      <form id="input-container" class="row needs-validation" novalidate>
+        <!-- Input penjualan di sini akan ditambahkan oleh JavaScript -->
+      </form>
 
-        <div class="text-center pt-3">
-          <!-- Button trigger modal -->
-          <button
-            type="button"
-            class="btn btn-primary"
-            id="predict-button"
-            data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop"
-            disabled
-          >
-            Prediksi
-          </button>
-        </div>
+      <div class="text-center pt-3">
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="predict-button"
+          data-bs-toggle="modal"
+          data-bs-target="#staticBackdrop"
+          disabled
+        >
+          Prediksi
+        </button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- modal WMA -->
-<div
-  class="modal fade"
-  id="staticBackdrop"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  tabindex="-1"
-  aria-labelledby="staticBackdropLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Hasil Prediksi WMA</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <div class="my-3" >
-          <table class="table table-bordered table-warning">
-            <tbody id="modal-table-body">
-            </tbody>
-          </table>
+  <!-- modal WMA -->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">
+            Hasil Prediksi WMA
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="my-3">
+            <table class="table table-bordered table-warning">
+              <tbody id="modal-table-body"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

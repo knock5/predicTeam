@@ -90,7 +90,7 @@ function predictWMA() {
     weightedSum += data[data.length - 1 - i] * weights[i];
     tableContent += `
     <tr>
-    <td class="col-7 table-info">Periode ${i + 1}</td>
+    <td class="col-7 table-info">Bulan ${i + 1}</td>
     <td>${data[data.length - 1 - i]}</td>
     <td>${weights[i]}</td></tr>`;
   }
@@ -98,7 +98,7 @@ function predictWMA() {
   const toRoundedResult = Math.round(weightedSum);
   let tableContent0 = `<tr>
   <th class="col-7 table-info">Jumlah Orde</th>
-  <td class="col-5" colspan="2" >${ordeValue} Periode</td>
+  <td class="col-5" colspan="2" >${ordeValue} Bulan</td>
   </td>
 </tr>
 <tr>
