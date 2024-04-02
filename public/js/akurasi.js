@@ -49,25 +49,30 @@ const renderDataTable = () => {
         <th>Aksi</th>
       </tr>
     </thead>
-    <tbody>
-      ${sessionData
-        .map(
-          (data) => `
-        <tr>
-          <td class="text-center">${data.id}</td>
-          <td>${data.bulan}</td>
-          <td class="text-center">${data.penjualan}</td>
-          <td class="text-center">
-            <button class="btn btn-warning" onclick="onEdit(${data.id})">Edit</button>
-            <button class="btn btn-danger" onclick="onDelete(${data.id})">Hapus</button>
-          </td>
-        </tr>
-      `
-        )
-        .join("")}
+    <tbody id="tabody">
     </tbody>
   `;
   }
+
+  const tabody = document.getElementById("tabody");
+
+  sessionData.forEach((data, index) => {
+    tabody.innerHTML += `
+      <tr>
+        <td class="text-center">${index + 1}</td>
+        <td>${data.bulan}</td>
+        <td class="text-center">${data.penjualan}</td>
+        <td class="text-center">
+          <button class="btn btn-warning btn-sm" onclick="onEdit(${
+            data.id
+          })">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="onDelete(${
+            data.id
+          })">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
 };
 
 // add data penjualan
@@ -75,7 +80,7 @@ const addDataPenjualan = () => {
   const storedData = JSON.parse(sessionStorage.getItem("dataPenjualan"));
   const sessionData = storedData.data;
 
-  const id = sessionData.length + 1;
+  const id = new Date().getTime();
   const bulan = inputBulan.value;
   const penjualan = inputPenjualan.value;
 
@@ -89,6 +94,17 @@ const addDataPenjualan = () => {
     swal.fire({
       title: "Error!",
       text: "Silahkan isi data penjualan terlebih dahulu.",
+      icon: "error",
+    });
+
+    return;
+  }
+
+  // validasi penjualan input angka
+  if (isNaN(penjualan)) {
+    swal.fire({
+      title: "Error!",
+      text: "Data penjualan harus berupa angka.",
       icon: "error",
     });
 
@@ -137,7 +153,7 @@ const onEdit = (id) => {
             <option value="Desember">Desember</option>
           </select>
       <label for="penjualan" class="form-label">Penjualan</label>
-      <input type="number" id="modal-penjualan" class="form-control" value="${data.penjualan}" required>
+      <input type="text" id="modal-penjualan" class="form-control" value="${data.penjualan}" required>
     `,
       showCancelButton: true,
       confirmButtonText: "Simpan",
@@ -151,6 +167,17 @@ const onEdit = (id) => {
           penjualan: document.getElementById("modal-penjualan").value,
         };
 
+        // validasi penjualan input angka
+        if (isNaN(newData.penjualan) || newData.penjualan === "") {
+          swal.fire({
+            title: "Error!",
+            text: "Data penjualan harus berupa angka.",
+            icon: "error",
+          });
+
+          return;
+        }
+
         const updatedData = sessionData.map((data) =>
           data.id === id ? newData : data
         );
@@ -159,8 +186,8 @@ const onEdit = (id) => {
         sessionStorage.setItem("dataPenjualan", JSON.stringify(storedData));
 
         swal.fire({
-          title: "Data berhasil diubah!",
-          text: "Data penjualan berhasil diubah di session storage.",
+          title: "Success!",
+          text: "Data penjualan berhasil diubah.",
           icon: "success",
         });
 
