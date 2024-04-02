@@ -6,12 +6,14 @@
       <h1 class="text-center">Perhitungan Akurasi</h1>
       <p style="text-align: justify">
         Pada halaman ini Anda dapat melakukan perhitungan akurasi berdasarkan
-        data aktual penjualan dan data peramalan yang telah dibuat. Perhitungan
-        ini melibatkan 3 orde (bulan) untuk mencari sebuah akurasinya. Anda juga
-        dapat melakukan <b>input data baru, edit,</b> ataupun
-        <b>menghapus data</b> aktual penjualan sesuai dengan kebutuhan Anda.
-        Lakukan pehitungan akurasi dan dapatkan hasilnya agar Anda dapat
-        mengetahui seberapa akurat peramalan yang telah Anda buat.
+        data aktual penjualan dan data peramalan yang telah dibuat pada bulan
+        terakhir. Perhitungan ini melibatkan 3 orde (bulan) untuk mencari sebuah
+        akurasinya, minimal terdapat data 4 bulan agar dapat berjalan. Anda juga
+        dapat melakukan
+        <b>input data baru, edit,</b> ataupun <b>menghapus data</b> aktual
+        penjualan sesuai dengan kebutuhan Anda. Lakukan pehitungan akurasi dan
+        dapatkan hasilnya agar Anda dapat mengetahui seberapa akurat peramalan
+        yang telah Anda buat.
       </p>
       <hr />
     </div>
@@ -32,41 +34,39 @@
         <h4 class="text-center">Input Data Aktual Penjualan</h4>
 
         <!-- Form untuk input data penjualan -->
-        <form action="/akurasi" method="POST">
-          <div class="form-group mb-3">
-            <label for="bulan" class="form-label">Bulan</label>
-            <select name="bulan" id="bulan" class="form-select">
-              <option value="" hidden>Pilih Bulan</option>
-              <option value="Januari">Januari</option>
-              <option value="Februari">Februari</option>
-              <option value="Maret">Maret</option>
-              <option value="April">April</option>
-              <option value="Mei">Mei</option>
-              <option value="Juni">Juni</option>
-              <option value="Juli">Juli</option>
-              <option value="Agustus">Agustus</option>
-              <option value="September">September</option>
-              <option value="Oktober">Oktober</option>
-              <option value="November">November</option>
-              <option value="Desember">Desember</option>
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="penjualan" class="form-label">Penjualan</label>
-            <input
-              type="text"
-              class="form-control"
-              id="penjualan"
-              name="penjualan"
-              placeholder="Masukkan jumlah penjualan"
-            />
-          </div>
-          <div class="text-center">
-            <button type="submit" class="btn btn-success" id="tambah-data">
-              Tambah
-            </button>
-          </div>
-        </form>
+        <div class="form-group mb-3">
+          <label for="bulan" class="form-label">Bulan</label>
+          <select name="bulan" id="bulan" class="form-select">
+            <option value="" hidden>Pilih Bulan</option>
+            <option value="Januari">Januari</option>
+            <option value="Februari">Februari</option>
+            <option value="Maret">Maret</option>
+            <option value="April">April</option>
+            <option value="Mei">Mei</option>
+            <option value="Juni">Juni</option>
+            <option value="Juli">Juli</option>
+            <option value="Agustus">Agustus</option>
+            <option value="September">September</option>
+            <option value="Oktober">Oktober</option>
+            <option value="November">November</option>
+            <option value="Desember">Desember</option>
+          </select>
+        </div>
+        <div class="form-group mb-3">
+          <label for="penjualan" class="form-label">Penjualan</label>
+          <input
+            type="text"
+            class="form-control"
+            id="penjualan"
+            name="penjualan"
+            placeholder="Masukkan jumlah penjualan"
+          />
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-success" id="tambah-data">
+            Tambah
+          </button>
+        </div>
       </div>
     </div>
 
@@ -76,48 +76,18 @@
     <div class="row py-4">
       <div class="col-md-2"></div>
       <div class="col-md-8">
-        <div class="wrap-table text-center">
-          <h4>Data Aktual Penjualan</h4>
-          <% if (dataPenjualan && dataPenjualan.length > 0) { %>
-          <!-- Tampilkan tabel data penjualan -->
+        <div class="wrap-table">
+          <h4 class="text-center py-2">Data Aktual Penjualan</h4>
+          <!-- data tabel penjualan -->
           <table
-            class="table table-success table-striped table-bordered border-primary"
-          >
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Bulan</th>
-                <th>Penjualan</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% dataPenjualan.forEach((item) => { %>
-              <tr>
-                <th scope="row"><%= item.id %></th>
-                <td><%= item.bulan %></td>
-                <td><%= item.penjualan %></td>
-                <td>
-                  <a href="/akurasi/<%= item.id %>/edit" class="btn btn-warning"
-                    >Edit</a
-                  >
-                  <a
-                    href="/akurasi/<%= item.id %>/delete"
-                    class="btn btn-danger"
-                    >Hapus</a
-                  >
-                </td>
-              </tr>
-              <% }); %>
-            </tbody>
-          </table>
-          <% } else { %>
-          <!-- Tampilkan pesan bahwa data penjualan tidak tersedia -->
-          <p>Data penjualan tidak tersedia.</p>
-          <% } %>
+            class="table table-bordered border-primary table-striped"
+            id="table-penjualan"
+          ></table>
         </div>
       </div>
       <div class="col-md-2"></div>
     </div>
   </div>
 </div>
+
+<script src="/js/akurasi.js"></script>

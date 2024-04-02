@@ -8,32 +8,42 @@
     {
       "id": 2,
       "bulan": "Februari",
-      "penjualan": 45
+      "penjualan": 48
     },
     {
       "id": 3,
       "bulan": "Maret",
-      "penjualan": 50
+      "penjualan": 49
     },
     {
       "id": 4,
       "bulan": "April",
-      "penjualan": 48
+      "penjualan": 55
     },
     {
       "id": 5,
       "bulan": "Mei",
-      "penjualan": 55
+      "penjualan": 56
     },
     {
       "id": 6,
       "bulan": "Juni",
-      "penjualan": 60
+      "penjualan": 49
     },
     {
       "id": 7,
       "bulan": "Juli",
-      "penjualan": 65
+      "penjualan": 47
+    },
+    {
+      "id": 8,
+      "bulan": "Agustus",
+      "penjualan": 53
+    },
+    {
+      "id": 9,
+      "bulan": "September",
+      "penjualan": 52
     }
   ]
 }
