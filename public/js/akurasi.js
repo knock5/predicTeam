@@ -174,17 +174,31 @@ const onDelete = (id) => {
   const storedData = JSON.parse(sessionStorage.getItem("dataPenjualan"));
   const sessionData = storedData.data;
 
-  const newData = sessionData.filter((data) => data.id !== id);
+  swal
+    .fire({
+      title: "Hapus Data Penjualan",
+      text: "Apakah Anda yakin ingin menghapus data penjualan ini?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Hapus",
+      cancelButtonText: "Batal",
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        const updatedData = sessionData.filter((data) => data.id !== id);
 
-  storedData.data = newData;
+        storedData.data = updatedData;
+        sessionStorage.setItem("dataPenjualan", JSON.stringify(storedData));
 
-  sessionStorage.setItem("dataPenjualan", JSON.stringify(storedData));
+        swal.fire({
+          title: "Success!",
+          text: "Data penjualan berhasil dihapus.",
+          icon: "success",
+        });
 
-  swal.fire({
-    title: "Data berhasil dihapus!",
-    text: "Data penjualan berhasil dihapus dari session storage.",
-    icon: "success",
-  });
+        renderDataTable();
+      }
+    });
 
   renderDataTable();
 };
