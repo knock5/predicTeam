@@ -1,13 +1,190 @@
 <% layout('layouts/app') %>
-
 <div class="container">
   <div class="py-3">
     <a href="/menu">
       <button class="btn btn-warning">Back</button>
     </a>
   </div>
+  <div class="col-8">
+    <div class="text-center">
+      <h2 class="mb-4">Linear Regression Prediction</h2>
+    </div>
+  </div>
 
-  <div class="py-3">
-    <h2>LR Page</h2>
+  <div class="form-group">
+    <label for="orde">Pilih Orde:</label>
+    <select class="form-control" id="orde">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <!-- Add more options if needed -->
+    </select>
+  </div>
+
+  <div id="input-container" class="row">
+    <!-- Input fields will be dynamically added here -->
+  </div>
+
+  <button    type="button"
+  class="btn btn-primary"
+  id="predict-button"
+  data-bs-toggle="modal"
+  data-bs-target="#staticBackdrop"
+  disabled>Predict</button>
+</div>
+
+<!-- Modal for Prediction Results -->
+<div class="modal fade"
+id="staticBackdrop"
+data-bs-backdrop="static"
+data-bs-keyboard="false"
+tabindex="-1"
+aria-labelledby="staticBackdropLabel"
+aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="prediction-modal-title">Prediction Results</h5>
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered">
+         
+          <tbody id="modal-table-body">
+            <!-- Prediction results will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
+</div>
+<script>
+  const ordeSelect = document.getElementById("orde");
+const inputContainer = document.getElementById("input-container");
+const predictButton = document.getElementById("predict-button");
+
+// Menjalankan fungsi untuk menampilkan input orde secara default
+predictButton.addEventListener("click", predictLinearRegression);
+// prediksi page
+ordeSelect.addEventListener("change", updateInputFieldsLR);
+
+function updateInputFieldsLR() {
+  const ordeValue = parseInt(ordeSelect.value);
+  inputContainer.innerHTML = "";
+
+  for (let i = 1; i <= ordeValue; i++) {
+    const inputGroup = document.createElement("div");
+    inputGroup.classList.add("col-md-2", "mb-3");
+    inputGroup.innerHTML = `
+    <label for="data${i}" class="form-label">Variabel bebas-${i}</label>
+    <input type="text" min="0" class="form-control dataInput" id="data${i}" name="data${i}" required>
+    <label for="dataY${i}" class="form-label">Variabel terikat-${i}</label>
+    <input type="text" min="0" class="form-control dataInput" id="dataY${i}" name="dataY${i}" required>
+    <div class="valid-feedback">
+      Okaii!
+    </div>
+    <div class="invalid-feedback">
+      Harap masukkan angka!
+    </div>
+        `;
+    inputContainer.appendChild(inputGroup);
+  }
+  const dataInputs = document.querySelectorAll(".dataInput");
+
+  // Ambil tombol Prediksi
+  const predictButton = document.getElementById("predict-button");
+
+  // Tambahkan event listener pada setiap input field
+  dataInputs.forEach((input) => {
+    input.addEventListener("input", function () {
+      const inputValue = input.value.trim();
+
+      // Validasi input: pastikan input adalah angka
+      if (!inputValue.match(/^\d+$/)) {
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+      } else {
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+      }
+
+      // Cek apakah ada input field yang tidak valid atau kosong
+      const isValidInputs = Array.from(dataInputs).every((input) => {
+        const inputValue = input.value.trim();
+        return inputValue !== "" && inputValue.match(/^\d+$/);
+      });
+      console.log(inputValue);
+      // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
+      predictButton.disabled = !isValidInputs;
+    });
+  });
+}
+updateInputFieldsLR();
+
+function predictLinearRegression() {
+  const ordeValue = parseInt(ordeSelect.value);
+  const tableBody = document.getElementById("modal-table-body");
+
+  const dataX = [];
+  const dataY = [];
+
+  for (let i = 1; i <= ordeValue; i++) {
+    const inputX = document.getElementById(`data${i}`);
+    const inputY = document.getElementById(`dataY${i}`);
+    if (inputX && inputY) {
+      const valueX = parseInt(inputX.value);
+      const valueY = parseInt(inputY.value);
+      if (!isNaN(valueX) && !isNaN(valueY)) {
+        dataX.push(valueX);
+        dataY.push(valueY);
+      }
+    }
+  }
+  const n = dataX.length;
+  // Hitung rata-rata dari dataX dan dataY
+  const meanX = dataX.reduce((acc, curr) => acc + curr, 0) / n;
+  const meanY = dataY.reduce((acc, curr) => acc + curr, 0) / n;
+
+  // Hitung kemiringan (b) menggunakan formula yang diberikan
+  let numerator = 0;
+  let denominator = 0;
+  for (let i = 0; i < n; i++) {
+    numerator += (dataX[i] - meanX) * (dataY[i] - meanY);
+    denominator += Math.pow(dataX[i] - meanX, 2);
+  }
+  const b = numerator / denominator;
+
+  // Hitung perpotongan (a)
+  const a = meanY - b * meanX;
+
+  // Hitung nilai prediksi (y) untuk setiap data X
+  const predictedValues = dataX.map((x) => a + b * x);
+
+  // Menampilkan hasil prediksi dalam tabel
+  let tableContent = `
+    <tr>
+      <th class="col-7 table-info">Variabel bebas (X)</th>
+      <th class="col-4 table-info">Variabel terikat (Y)</th>
+      <th class="col-2 table-info">Prediksi (ŷ)</th>
+    </tr>
+  `;
+  for (let i = 0; i < n; i++) {
+    tableContent += `
+      <tr>
+        <td>${dataX[i]}</td>
+        <td>${dataY[i]}</td>
+        <td>${predictedValues[i]}</td>
+      </tr>
+    `;
+  }
+
+  tableBody.innerHTML = tableContent;
+}
+
+</script>
