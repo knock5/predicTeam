@@ -1,4 +1,5 @@
 const tambahButton = document.getElementById("tambah-data");
+const akurasiButton = document.getElementById("hitung-akurasi");
 const inputBulan = document.getElementById("bulan");
 const inputPenjualan = document.getElementById("penjualan");
 
@@ -29,7 +30,6 @@ const getPenjualanJSON = async () => {
 const renderDataTable = () => {
   const storedData = JSON.parse(sessionStorage.getItem("dataPenjualan"));
   const sessionData = storedData.data;
-
   const tablePenjualan = document.getElementById("table-penjualan");
 
   // cek data
@@ -230,8 +230,130 @@ const onDelete = (id) => {
   renderDataTable();
 };
 
+// hitung akurasi MA 3 orde
+const calAkurasiMA3 = () => {
+  const storedDataPenjualan = JSON.parse(
+    sessionStorage.getItem("dataPenjualan")
+  );
+  const jumlahOrde = 3;
+  const resData = storedDataPenjualan.data;
+
+  // cek minimal 4 data aktual penjualan
+  if (resData.length < 4) {
+    swal.fire({
+      title: "Error",
+      text: "Perhitungan harus memiliki data aktual minimal 4 bulan",
+      icon: "error",
+    });
+
+    return;
+  }
+
+  // avg MA3
+  const dataMA = [];
+
+  for (let i = jumlahOrde; i < resData.length; i++) {
+    const avg =
+      resData
+        .slice(i - jumlahOrde, i)
+        .reduce((sum, entry) => sum + entry.penjualan, 0) / jumlahOrde;
+
+    // push prediksi ke dalam array
+    dataMA.push({
+      bulan: resData[i].bulan,
+      prediksi: Math.round(avg),
+    });
+  }
+
+  console.log(dataMA);
+
+  // Dt-Ft
+  const dataDtFt = [];
+
+  for (let i = 0; i < dataMA.length; i++) {
+    const aktual = resData[i + jumlahOrde].penjualan;
+    const prediksi = dataMA[i].prediksi;
+
+    // Hitung selisih absolut
+    const selisih = Math.abs(aktual - prediksi);
+
+    dataDtFt.push({
+      bulan: resData[i + jumlahOrde].bulan,
+      dtft: selisih,
+    });
+  }
+
+  console.log(dataDtFt);
+
+  // (Dt-Ft)^2
+  const dataDtFtSquared = [];
+
+  for (let i = 0; i < dataDtFt.length; i++) {
+    const bulan = dataDtFt[i].bulan;
+    const dtft = dataDtFt[i].dtft;
+    const squared = Math.pow(dtft, 2);
+
+    dataDtFtSquared.push({
+      bulan: bulan,
+      squared: squared,
+    });
+  }
+
+  console.log(dataDtFtSquared);
+
+  // (Dt-Ft)/Dt
+  const dataDtFtDivDt = [];
+
+  for (let i = 0; i < dataMA.length; i++) {
+    const bulan = dataMA[i].bulan;
+    const aktual = resData[i + jumlahOrde].penjualan;
+    const prediksi = dataMA[i].prediksi;
+
+    const selisih = Math.abs(aktual - prediksi);
+
+    if (aktual !== 0) {
+      let hasil = selisih / aktual;
+      hasil = parseFloat(hasil.toFixed(2));
+
+      dataDtFtDivDt.push({
+        bulan: bulan,
+        nilai: hasil,
+      });
+    } else {
+      dataDtFtDivDt.push({
+        bulan: bulan,
+        nilai: NaN,
+      });
+    }
+  }
+
+  console.log(dataDtFtDivDt);
+
+  // avg seluruh prediksi
+  const sumPrediksi = dataMA.reduce(
+    (total, current) => total + current.prediksi,
+    0
+  );
+  const resAvgPrediksi = Math.round(sumPrediksi / dataMA.length);
+  // jumlah Dt-Ft
+  const sumDtFt = dataDtFt.reduce((total, current) => total + current.dtft, 0);
+  // jumlah (Dt-Ft)^2
+  const sumDtFtSquared = dataDtFtSquared.reduce(
+    (total, current) => total + current.squared,
+    0
+  );
+  // jumlah (Dt-Ft)/Dt
+  const sumDtFtDivDt = dataDtFtDivDt.reduce(
+    (total, current) => total + current.nilai,
+    0
+  );
+
+  console.log(resAvgPrediksi, sumDtFt, sumDtFtSquared, sumDtFtDivDt);
+};
+
 // event listener
 tambahButton.addEventListener("click", addDataPenjualan);
+akurasiButton.addEventListener("click", calAkurasiMA3);
 
 document.addEventListener("DOMContentLoaded", async () => {
   // cek data penjualan di session storage
