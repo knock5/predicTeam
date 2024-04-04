@@ -82,7 +82,7 @@ const addDataPenjualan = () => {
 
   const id = new Date().getTime();
   const bulan = inputBulan.value;
-  const penjualan = inputPenjualan.value;
+  const penjualan = parseFloat(inputPenjualan.value);
 
   const newData = {
     id,
@@ -112,6 +112,8 @@ const addDataPenjualan = () => {
   }
 
   sessionData.push(newData);
+  console.log(newData.penjualan);
+  console.log(typeof newData.penjualan);
   sessionStorage.setItem("dataPenjualan", JSON.stringify(storedData));
 
   inputBulan.value = "";
@@ -164,7 +166,9 @@ const onEdit = (id) => {
         const newData = {
           id,
           bulan: document.getElementById("modal-bulan").value,
-          penjualan: document.getElementById("modal-penjualan").value,
+          penjualan: parseFloat(
+            document.getElementById("modal-penjualan").value
+          ),
         };
 
         // validasi penjualan input angka
@@ -265,8 +269,6 @@ const calAkurasiMA3 = () => {
     });
   }
 
-  console.log(dataMA);
-
   // Dt-Ft
   const dataDtFt = [];
 
@@ -283,8 +285,6 @@ const calAkurasiMA3 = () => {
     });
   }
 
-  console.log(dataDtFt);
-
   // (Dt-Ft)^2
   const dataDtFtSquared = [];
 
@@ -298,8 +298,6 @@ const calAkurasiMA3 = () => {
       squared: squared,
     });
   }
-
-  console.log(dataDtFtSquared);
 
   // (Dt-Ft)/Dt
   const dataDtFtDivDt = [];
@@ -327,8 +325,6 @@ const calAkurasiMA3 = () => {
     }
   }
 
-  console.log(dataDtFtDivDt);
-
   // avg seluruh prediksi
   const sumPrediksi = dataMA.reduce(
     (total, current) => total + current.prediksi,
@@ -348,7 +344,56 @@ const calAkurasiMA3 = () => {
     0
   );
 
-  console.log(resAvgPrediksi, sumDtFt, sumDtFtSquared, sumDtFtDivDt);
+  // value n
+  const n = dataMA.length;
+  // MAD = SUM(Dt-Ft) / n
+  const resMAD = parseFloat(sumDtFt / n).toFixed(2);
+  // MSE = (SUM(Dt-Ft)^2) / n
+  const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
+  // %MAPE = (SUM(Dt-Ft)/Dt) / n
+  const resMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  // SE = (SUM(Dt-Ft)^2 / (n - 2))
+  const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
+  const resSE = parseFloat(calSE).toFixed(2);
+  // Hasil akurasi = 100% - MAPE
+  const resAcc = 100 - resMAPE;
+
+  console.log(
+    `MAD: ${resMAD}, MSE: ${resMSE}, MAPE: ${resMAPE}, SE: ${resSE}, akurasi: ${resAcc}`
+  );
+
+  // custom DOM tabel akurasi
+  const tableBody = document.getElementById("tabel-akurasi");
+  tableBody.innerHTML = `
+    <thead>
+      <tr class="text-center table-dark">
+        <th>Metrik</th>
+        <th>Nilai</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="table-light">MAD</td>
+        <td class="text-center table-info">${resMAD}</td>
+      </tr>
+      <tr>
+        <td class="table-light">MSE</td>
+        <td class="text-center table-info">${resMSE}</td>
+      </tr>
+      <tr>
+        <td class="table-light">MAPE</td>
+        <td class="text-center table-info">${resMAPE}%</td>
+      </tr>
+      <tr>
+        <td class="table-light">SE</td>
+        <td class="text-center table-info">${resSE}</td>
+      </tr>
+      <tr>
+        <td>Akurasi</td>
+        <td class="text-center table-primary">${resAcc}%</td>
+      </tr>
+    </tbody>
+  `;
 };
 
 // event listener
