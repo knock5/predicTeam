@@ -150,7 +150,6 @@ function predictLinearRegression() {
   // Hitung kemiringan (b) menggunakan formula yang diberikan
   // Hitung Σ(xy) dengan reduce
 const sumXY = dataX.reduce((acc, x, i) => acc + x * dataY[i], 0);
-
 // Hitung Σ(x^2) dengan reduce
 const sumXSquare = dataX.reduce((acc, x) => acc + x * x, 0);
 const jm= dataY.reduce((acc, x) => acc + x, 0); 
@@ -159,16 +158,16 @@ const meanX = dataX.reduce((acc, x) => acc + x, 0) / n;
 const meanY = dataY.reduce((acc, y) => acc + y, 0) / n;
 const pp = n + 1;
 // Hitung b
-const b = (sumXY - dataX.length * meanX * meanY) / (sumXSquare - n * meanX * meanX);
+const b = (sumXY -( n * meanX * meanY)) / (sumXSquare - (n * meanX * meanX));
 
 console.log(b);
 
   // Hitung perpotongan (a)
-  const a = meanY - b * meanX;
+  const a = meanY - (b * meanX);
 
   // Hitung nilai prediksi (y) untuk setiap data X
   // const predictedValues = DataX.map((x) => a + b * x);
-  const predictedValues = Math.round(a + (b *pp));
+  const predictedValues = Math.round(a + (b * pp));
 
   // Menampilkan hasil prediksi dalam tabel
   let tableContent = `
