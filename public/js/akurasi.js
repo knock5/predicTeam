@@ -2,6 +2,7 @@ const tambahButton = document.getElementById("tambah-data");
 const akurasiButton = document.getElementById("hitung-akurasi");
 const inputBulan = document.getElementById("bulan");
 const inputPenjualan = document.getElementById("penjualan");
+const metodeSelected = document.getElementById("metode-akurasi");
 
 // cek session storage
 if (typeof Storage !== "undefined") {
@@ -363,7 +364,7 @@ const calAkurasiMA3 = () => {
   );
 
   // custom DOM tabel akurasi
-  const tableBody = document.getElementById("tabel-akurasi");
+  const tableBody = document.getElementById("tabel-akurasi-ma");
   tableBody.innerHTML = `
     <thead>
       <tr class="text-center table-dark">
@@ -396,9 +397,48 @@ const calAkurasiMA3 = () => {
   `;
 };
 
+// hitung akurasi WMA 3 orde
+const calAkurasiWMA3 = () => {
+  // custom DOM tabel akurasi
+  const tableBody = document.getElementById("tabel-akurasi-wma");
+  tableBody.innerHTML = `
+    <thead>
+      <tr class="text-center table-dark">
+        <th>Judul</th
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <p>Akurasi WMA</p>
+      </tr>
+    </tbody>
+  `;
+};
+
 // event listener
 tambahButton.addEventListener("click", addDataPenjualan);
-akurasiButton.addEventListener("click", calAkurasiMA3);
+metodeSelected.addEventListener("change", () => {
+  const metode = metodeSelected.value;
+  akurasiButton.disabled = false;
+  console.log(metode);
+
+  // Hapus event listener sebelumnya
+  akurasiButton.removeEventListener("click", calAkurasiMA3);
+  akurasiButton.removeEventListener("click", calAkurasiWMA3);
+
+  switch (metode) {
+    case "MA":
+      akurasiButton.setAttribute("data-bs-target", "#staticBackdropMA");
+      akurasiButton.addEventListener("click", calAkurasiMA3);
+      break;
+    case "WMA":
+      akurasiButton.setAttribute("data-bs-target", "#staticBackdropWMA");
+      akurasiButton.addEventListener("click", calAkurasiWMA3);
+      break;
+    default:
+      break;
+  }
+});
 
 document.addEventListener("DOMContentLoaded", async () => {
   // cek data penjualan di session storage
@@ -412,6 +452,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // simpan data ke session storage
     sessionStorage.setItem("dataPenjualan", JSON.stringify(data));
   }
+
+  // disable akurasi button
+  metodeSelected.value = "";
+  akurasiButton.disabled = true;
 
   // render table penjualan
   renderDataTable();

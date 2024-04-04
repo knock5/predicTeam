@@ -21,17 +21,27 @@
     <div class="row py-2 justify-content-center gap-5 align-items-center mb-4">
       <div class="col-md-5">
         <div class="wrap-cal-akurasi p-3 border text-center bg-warning rounded">
-          Anda bisa menghitung akurasi peramalan dengan menekan tombol di bawah
-          ini.
+          Anda dapat memilih metode untuk melakukan prediksi.
 
           <div class="py-3">
+            <select
+              name="metode-akurasi"
+              id="metode-akurasi"
+              class="form-select"
+            >
+              <option value="" selected hidden>Pilih Metode</option>
+              <option value="MA">Moving Average (MA)</option>
+              <option value="WMA">Weighted Moving Average (WMA)</option>
+            </select>
+          </div>
+
+          <div class="py-2">
             <!-- Button trigger modal -->
             <button
               type="button"
               class="btn btn-primary"
               id="hitung-akurasi"
               data-bs-toggle="modal"
-              data-bs-target="#staticBackdrop"
             >
               Prediksi
             </button>
@@ -98,10 +108,10 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal MA -->
   <div
     class="modal fade"
-    id="staticBackdrop"
+    id="staticBackdropMA"
     data-bs-backdrop="static"
     data-bs-keyboard="false"
     tabindex="-1"
@@ -111,7 +121,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Hasil Akurasi</h5>
+          <h5 class="modal-title" id="staticBackdropLabel">Hasil Akurasi MA</h5>
           <button
             type="button"
             class="btn-close"
@@ -123,7 +133,42 @@
           <div class="my-3">
             <table
               class="table table-bordered table-warning"
-              id="tabel-akurasi"
+              id="tabel-akurasi-ma"
+            ></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal WMA -->
+  <div
+    class="modal fade"
+    id="staticBackdropWMA"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">
+            Hasil Akurasi WMA
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="my-3">
+            <table
+              class="table table-bordered table-warning"
+              id="tabel-akurasi-wma"
             ></table>
           </div>
         </div>
