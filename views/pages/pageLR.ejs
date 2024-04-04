@@ -14,9 +14,9 @@
   <div class="form-group">
     <label for="orde">Pilih Orde:</label>
     <select class="form-control" id="orde">
-      <option value="1">1</option>
       <option value="2">2</option>
-      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="6">6</option>
       <!-- Add more options if needed -->
     </select>
   </div>
@@ -82,9 +82,8 @@ function updateInputFieldsLR() {
     const inputGroup = document.createElement("div");
     inputGroup.classList.add("col-md-2", "mb-3");
     inputGroup.innerHTML = `
-    <label for="data${i}" class="form-label">Variabel bebas-${i}</label>
-    <input type="text" min="0" class="form-control dataInput" id="data${i}" name="data${i}" required>
-    <label for="dataY${i}" class="form-label">Variabel terikat-${i}</label>
+    <input type="text" min="0" class="form-control dataInput" id="data${i}" value="${i}" name="data${i}" required hidden>
+    <label for="dataY${i}" class="form-label">Data bulan ke-${i}</label>
     <input type="text" min="0" class="form-control dataInput" id="dataY${i}" name="dataY${i}" required>
     <div class="valid-feedback">
       Okaii!
@@ -119,7 +118,6 @@ function updateInputFieldsLR() {
         const inputValue = input.value.trim();
         return inputValue !== "" && inputValue.match(/^\d+$/);
       });
-      console.log(inputValue);
       // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
       predictButton.disabled = !isValidInputs;
     });
@@ -147,31 +145,36 @@ function predictLinearRegression() {
     }
   }
   const n = dataX.length;
-  // Hitung rata-rata dari dataX dan dataY
-  const meanX = dataX.reduce((acc, curr) => acc + curr, 0) / n;
-  const meanY = dataY.reduce((acc, curr) => acc + curr, 0) / n;
+  // Hitung rata-rata dari dataX dan data
 
   // Hitung kemiringan (b) menggunakan formula yang diberikan
-  let numerator = 0;
-  let denominator = 0;
-  for (let i = 0; i < n; i++) {
-    numerator += (dataX[i] - meanX) * (dataY[i] - meanY);
-    denominator += Math.pow(dataX[i] - meanX, 2);
-  }
-  const b = numerator / denominator;
+  // Hitung Σ(xy) dengan reduce
+const sumXY = dataX.reduce((acc, x, i) => acc + x * dataY[i], 0);
+
+// Hitung Σ(x^2) dengan reduce
+const sumXSquare = dataX.reduce((acc, x) => acc + x * x, 0);
+const jm= dataY.reduce((acc, x) => acc + x, 0); 
+// Hitung rata-rata dari nilai x dan nilai y
+const meanX = dataX.reduce((acc, x) => acc + x, 0) / n;
+const meanY = dataY.reduce((acc, y) => acc + y, 0) / n;
+const pp = n + 1;
+// Hitung b
+const b = (sumXY - dataX.length * meanX * meanY) / (sumXSquare - n * meanX * meanX);
+
+console.log(b);
 
   // Hitung perpotongan (a)
   const a = meanY - b * meanX;
 
   // Hitung nilai prediksi (y) untuk setiap data X
-  const predictedValues = dataX.map((x) => a + b * x);
+  // const predictedValues = DataX.map((x) => a + b * x);
+  const predictedValues = Math.round(a + (b *pp));
 
   // Menampilkan hasil prediksi dalam tabel
   let tableContent = `
     <tr>
-      <th class="col-7 table-info">Variabel bebas (X)</th>
-      <th class="col-4 table-info">Variabel terikat (Y)</th>
-      <th class="col-2 table-info">Prediksi (ŷ)</th>
+      <th class="col-7 table-info">bulan(X)</th>
+      <th class="col-4 table-info">banyak data(Y)</th>
     </tr>
   `;
   for (let i = 0; i < n; i++) {
@@ -179,10 +182,20 @@ function predictLinearRegression() {
       <tr>
         <td>${dataX[i]}</td>
         <td>${dataY[i]}</td>
-        <td>${predictedValues[i]}</td>
       </tr>
     `;
   }
+
+  tableContent += `
+    <tr>
+      <td>total data</td>
+      <td>${jm}</td>
+    </tr>
+    <tr>
+      <td>Hasil Prediski</td>
+      <td>${predictedValues}</td>
+    </tr>
+  `;
 
   tableBody.innerHTML = tableContent;
 }
