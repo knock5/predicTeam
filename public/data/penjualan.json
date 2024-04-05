@@ -44,6 +44,16 @@
       "id": 9,
       "bulan": "September",
       "penjualan": 52
+    },
+    {
+      "id": 10,
+      "bulan": "Oktober",
+      "penjualan": 49
+    },
+    {
+      "id": 11,
+      "bulan": "November",
+      "penjualan": 57
     }
   ]
 }

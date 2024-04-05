@@ -65,11 +65,11 @@ const renderDataTable = () => {
         <td class="text-center">${data.penjualan}</td>
         <td class="text-center">
           <button class="btn btn-warning btn-sm" onclick="onEdit(${
-            data.id
-          })">Edit</button>
+      data.id
+    })">Edit</button>
           <button class="btn btn-danger btn-sm" onclick="onDelete(${
-            data.id
-          })">Hapus</button>
+      data.id
+    })">Hapus</button>
         </td>
       </tr>
     `;
@@ -326,7 +326,9 @@ const calAkurasiMA3 = () => {
     }
   }
 
-  // avg seluruh prediksi
+  console.log(dataDtFtDivDt);
+
+  // avg seluruh prediksi MA
   const sumPrediksi = dataMA.reduce(
     (total, current) => total + current.prediksi,
     0
@@ -345,6 +347,8 @@ const calAkurasiMA3 = () => {
     0
   );
 
+  console.log(sumDtFtDivDt);
+
   // value n
   const n = dataMA.length;
   // MAD = SUM(Dt-Ft) / n
@@ -352,19 +356,181 @@ const calAkurasiMA3 = () => {
   // MSE = (SUM(Dt-Ft)^2) / n
   const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
   // %MAPE = (SUM(Dt-Ft)/Dt) / n
-  const resMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  const valMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  console.log(valMAPE);
+  const resMAPE = valMAPE * 100;
   // SE = (SUM(Dt-Ft)^2 / (n - 2))
   const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
   const resSE = parseFloat(calSE).toFixed(2);
   // Hasil akurasi = 100% - MAPE
   const resAcc = 100 - resMAPE;
 
-  console.log(
-    `MAD: ${resMAD}, MSE: ${resMSE}, MAPE: ${resMAPE}, SE: ${resSE}, akurasi: ${resAcc}`
-  );
-
   // custom DOM tabel akurasi
   const tableBody = document.getElementById("tabel-akurasi-ma");
+  tableBody.innerHTML = `
+    <thead>
+      <tr class="text-center table-dark">
+        <th>Metrik</th>
+        <th>Nilai</th>
+      </tr>
+    </thead>
+    <tbody>
+       <tr>
+        <td class="table-light">AVG Prediksi</td>
+        <td class="text-center table-info">${resAvgPrediksi}</td>
+      </tr>
+      <tr>
+        <td class="table-light">n</td>
+        <td class="text-center table-info">${n}</td>
+      </tr>
+      <tr>
+        <td class="table-light">MAD</td>
+        <td class="text-center table-info">${resMAD}</td>
+      </tr>
+      <tr>
+        <td class="table-light">MSE</td>
+        <td class="text-center table-info">${resMSE}</td>
+      </tr>
+      <tr>
+        <td class="table-light">MAPE</td>
+        <td class="text-center table-info">${resMAPE}%</td>
+      </tr>
+      <tr>
+        <td class="table-light">SE</td>
+        <td class="text-center table-info">${resSE}</td>
+      </tr>
+      <tr>
+        <td>Akurasi</td>
+        <td class="text-center table-primary">${resAcc}%</td>
+      </tr>
+    </tbody>
+  `;
+};
+
+// hitung akurasi WMA 3 orde
+const calAkurasiWMA3 = () => {
+  const storedDataPenjualan = JSON.parse(sessionStorage.getItem("dataPenjualan"));
+  const resData = storedDataPenjualan.data;
+  const jumlahOrde = 3;
+
+  // cek minimal 4 data aktual penjualan
+  if (resData.length < 4) {
+    swal.fire({
+      title: "Error",
+      text: "Perhitungan harus memiliki data aktual minimal 4 bulan",
+      icon: "error",
+    });
+    return;
+  }
+
+  // Pembagian bobot
+  const bobot = [0.5, 0.3, 0.2];
+
+  // Hitung WMA
+  const dataWMA = [];
+
+  for (let i = 2; i < resData.length; i++) {
+    const prediksi =
+      (resData[i - 2].penjualan * bobot[0] +
+        resData[i - 1].penjualan * bobot[1] +
+        resData[i].penjualan * bobot[2]) /
+      (bobot[0] + bobot[1] + bobot[2]);
+
+    // Push prediksi ke dalam array
+    dataWMA.push({
+      bulan: resData[i].bulan,
+      prediksi: Math.round(prediksi),
+    });
+  }
+
+  console.log(dataWMA)
+
+  // Hitung Dt-Ft
+  const dataDtFt = [];
+
+  for (let i = 0; i < dataWMA.length; i++) {
+    const aktual = resData[i + 2].penjualan;
+    const prediksi = dataWMA[i].prediksi;
+
+    // Hitung selisih absolut
+    const selisih = Math.abs(aktual - prediksi);
+
+    dataDtFt.push({
+      bulan: resData[i + 2].bulan,
+      dtft: selisih,
+    });
+  }
+
+  // Hitung (Dt-Ft)^2
+  const dataDtFtSquared = [];
+
+  for (let i = 0; i < dataDtFt.length; i++) {
+    const bulan = dataDtFt[i].bulan;
+    const dtft = dataDtFt[i].dtft;
+    const squared = Math.pow(dtft, 2);
+
+    dataDtFtSquared.push({
+      bulan: bulan,
+      squared: squared,
+    });
+  }
+
+  // (Dt-Ft)/Dt
+  const dataDtFtDivDt = [];
+
+  for (let i = 0; i < dataWMA.length; i++) {
+    const bulan = dataWMA[i].bulan;
+    const aktual = resData[i + jumlahOrde].penjualan;
+    const prediksi = dataWMA[i].prediksi;
+
+    const selisih = Math.abs(aktual - prediksi);
+
+    if (aktual !== 0) {
+      let hasil = selisih / aktual;
+      hasil = parseFloat(hasil.toFixed(2));
+
+      dataDtFtDivDt.push({
+        bulan: bulan,
+        nilai: hasil,
+      });
+    } else {
+      dataDtFtDivDt.push({
+        bulan: bulan,
+        nilai: NaN,
+      });
+    }
+  }
+
+  const n = dataWMA.length;
+
+  // avg seluruh prediksi WMA
+  const sumPrediksi = dataWMA.reduce((total, current) => total + current.prediksi, 0);
+  const resAvgPrediksi = Math.round(sumPrediksi / n);
+
+  // Hitung MAD
+  const sumDtFt = dataDtFt.reduce((total, current) => total + current.dtft, 0);
+  const resMAD = parseFloat(sumDtFt / n).toFixed(2);
+
+  // Hitung MSE
+  const sumDtFtSquared = dataDtFtSquared.reduce(
+    (total, current) => total + current.squared,
+    0
+  );
+  const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
+
+  // Hitung MAPE
+  const sumDtFtDivDt = dataDtFtDivDt.reduce((total, current) => total + current.nilai, 0);
+  const resMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+
+  // Hitung SE
+  const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
+  const resSE = parseFloat(calSE).toFixed(2);
+
+  // Hitung Akurasi
+  const resAcc = 100 - resMAPE;
+
+  // Tampilkan hasil
+  const tableBody = document.getElementById("tabel-akurasi");
   tableBody.innerHTML = `
     <thead>
       <tr class="text-center table-dark">
@@ -397,23 +563,6 @@ const calAkurasiMA3 = () => {
   `;
 };
 
-// hitung akurasi WMA 3 orde
-const calAkurasiWMA3 = () => {
-  // custom DOM tabel akurasi
-  const tableBody = document.getElementById("tabel-akurasi-wma");
-  tableBody.innerHTML = `
-    <thead>
-      <tr class="text-center table-dark">
-        <th>Judul</th
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <p>Akurasi WMA</p>
-      </tr>
-    </tbody>
-  `;
-};
 
 // event listener
 tambahButton.addEventListener("click", addDataPenjualan);
