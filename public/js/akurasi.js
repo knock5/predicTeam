@@ -352,7 +352,7 @@ const calAkurasiMA3 = () => {
   // MSE = (SUM(Dt-Ft)^2) / n
   const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
   // %MAPE = (SUM(Dt-Ft)/Dt) / n
-  const valMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  const valMAPE = parseFloat(sumDtFtDivDt / n).toFixed(4);
   const resMAPE = valMAPE * 100;
   // SE = (SUM(Dt-Ft)^2 / (n - 2))
   const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
@@ -493,19 +493,21 @@ const calAkurasiWMA3 = () => {
   }
 
   // Pembagian bobot
-  const bobot = [0.5, 0.3, 0.2];
+  const weights = [0.5, 0.3, 0.2];
 
   // Hitung WMA
   const dataWMA = [];
 
   for (let i = jumlahOrde; i < resData.length; i++) {
-    let prediksi = 0;
+    let weightedSum = 0;
     for (let j = 0; j < jumlahOrde; j++) {
-      prediksi += resData[i - j].penjualan * bobot[j];
+      weightedSum += resData[i - j - 1].penjualan * weights[j];
     }
+    const prediksi = Math.round(weightedSum);
+
     dataWMA.push({
       bulan: resData[i].bulan,
-      prediksi: prediksi,
+      prediksi: parseFloat(prediksi),
     });
   }
 
@@ -590,7 +592,7 @@ const calAkurasiWMA3 = () => {
     (total, current) => total + current.nilai,
     0
   );
-  const hasilMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  const hasilMAPE = parseFloat(sumDtFtDivDt / n).toFixed(4);
   const resMAPE = hasilMAPE * 100;
 
   // Hitung SE
@@ -611,6 +613,14 @@ const calAkurasiWMA3 = () => {
     </thead>
     <tbody>
       <tr>
+        <td class="table-light">AVG Prediksi</td>
+        <td class="text-center table-info">${resAvgPrediksi}</td>
+      </tr>
+      <tr>
+        <td class="table-light">n</td>
+        <td class="text-center table-info">${n}</td>
+      </tr>
+      <tr>
         <td class="table-light">MAD</td>
         <td class="text-center table-info">${resMAD}</td>
       </tr>
@@ -627,8 +637,8 @@ const calAkurasiWMA3 = () => {
         <td class="text-center table-info">${resSE}</td>
       </tr>
       <tr>
-        <td class="table-light">Akurasi</td>
-        <td class="text-center table-info">${resAcc}%</td>
+        <td class="table-warning">Akurasi</td>
+        <td class="text-center table-primary">${resAcc}%</td>
       </tr>
     </tbody>
   `;
@@ -712,7 +722,6 @@ tambahButton.addEventListener("click", addDataPenjualan);
 metodeSelected.addEventListener("change", () => {
   const metode = metodeSelected.value;
   akurasiButton.disabled = false;
-  console.log(metode);
 
   // Hapus event listener sebelumnya
   akurasiButton.removeEventListener("click", calAkurasiMA3);
