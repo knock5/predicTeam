@@ -65,11 +65,11 @@ const renderDataTable = () => {
         <td class="text-center">${data.penjualan}</td>
         <td class="text-center">
           <button class="btn btn-warning btn-sm" onclick="onEdit(${
-      data.id
-    })">Edit</button>
+            data.id
+          })">Edit</button>
           <button class="btn btn-danger btn-sm" onclick="onDelete(${
-      data.id
-    })">Hapus</button>
+            data.id
+          })">Hapus</button>
         </td>
       </tr>
     `;
@@ -326,8 +326,6 @@ const calAkurasiMA3 = () => {
     }
   }
 
-  console.log(dataDtFtDivDt);
-
   // avg seluruh prediksi MA
   const sumPrediksi = dataMA.reduce(
     (total, current) => total + current.prediksi,
@@ -347,8 +345,6 @@ const calAkurasiMA3 = () => {
     0
   );
 
-  console.log(sumDtFtDivDt);
-
   // value n
   const n = dataMA.length;
   // MAD = SUM(Dt-Ft) / n
@@ -357,7 +353,6 @@ const calAkurasiMA3 = () => {
   const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
   // %MAPE = (SUM(Dt-Ft)/Dt) / n
   const valMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
-  console.log(valMAPE);
   const resMAPE = valMAPE * 100;
   // SE = (SUM(Dt-Ft)^2 / (n - 2))
   const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
@@ -405,11 +400,85 @@ const calAkurasiMA3 = () => {
       </tr>
     </tbody>
   `;
+
+  tampilGrafikMA(dataMA, resAvgPrediksi);
+};
+
+// fungsi grafik MA
+const tampilGrafikMA = (dataMA, resAvgPrediksi) => {
+  const bulan = dataMA.map((data) => data.bulan);
+  const prediksi = dataMA.map((data) => data.prediksi);
+
+  // Hapus grafik sebelumnya jika ada
+  const existingChart = document.getElementById("grafikMA");
+  if (existingChart) {
+    existingChart.remove();
+  }
+
+  // Buat elemen canvas baru untuk grafik
+  const canvas = document.createElement("canvas");
+  canvas.id = "grafikMA";
+  canvas.classList.add("w-100");
+  const chartContainer = document.getElementById("chartContainerMA");
+  chartContainer.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: bulan,
+      datasets: [
+        {
+          label: "Prediksi MA",
+          data: prediksi,
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+        },
+        {
+          label: "Rata-rata Prediksi MA",
+          data: Array(bulan.length).fill(resAvgPrediksi),
+          fill: false,
+          borderColor: "rgb(255, 99, 132)",
+          tension: 0.1,
+          borderDash: [5, 5],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Grafik Prediksi MA",
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: "Bulan",
+          },
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: "Nilai Penjualan",
+          },
+        },
+      },
+    },
+  });
 };
 
 // hitung akurasi WMA 3 orde
 const calAkurasiWMA3 = () => {
-  const storedDataPenjualan = JSON.parse(sessionStorage.getItem("dataPenjualan"));
+  const storedDataPenjualan = JSON.parse(
+    sessionStorage.getItem("dataPenjualan")
+  );
   const resData = storedDataPenjualan.data;
   const jumlahOrde = 3;
 
@@ -429,34 +498,29 @@ const calAkurasiWMA3 = () => {
   // Hitung WMA
   const dataWMA = [];
 
-  for (let i = 2; i < resData.length; i++) {
-    const prediksi =
-      (resData[i - 2].penjualan * bobot[0] +
-        resData[i - 1].penjualan * bobot[1] +
-        resData[i].penjualan * bobot[2]) /
-      (bobot[0] + bobot[1] + bobot[2]);
-
-    // Push prediksi ke dalam array
+  for (let i = jumlahOrde; i < resData.length; i++) {
+    let prediksi = 0;
+    for (let j = 0; j < jumlahOrde; j++) {
+      prediksi += resData[i - j].penjualan * bobot[j];
+    }
     dataWMA.push({
       bulan: resData[i].bulan,
-      prediksi: Math.round(prediksi),
+      prediksi: prediksi,
     });
   }
-
-  console.log(dataWMA)
 
   // Hitung Dt-Ft
   const dataDtFt = [];
 
   for (let i = 0; i < dataWMA.length; i++) {
-    const aktual = resData[i + 2].penjualan;
+    const aktual = resData[i + jumlahOrde].penjualan;
     const prediksi = dataWMA[i].prediksi;
 
     // Hitung selisih absolut
     const selisih = Math.abs(aktual - prediksi);
 
     dataDtFt.push({
-      bulan: resData[i + 2].bulan,
+      bulan: resData[i + jumlahOrde].bulan,
       dtft: selisih,
     });
   }
@@ -504,7 +568,10 @@ const calAkurasiWMA3 = () => {
   const n = dataWMA.length;
 
   // avg seluruh prediksi WMA
-  const sumPrediksi = dataWMA.reduce((total, current) => total + current.prediksi, 0);
+  const sumPrediksi = dataWMA.reduce(
+    (total, current) => total + current.prediksi,
+    0
+  );
   const resAvgPrediksi = Math.round(sumPrediksi / n);
 
   // Hitung MAD
@@ -519,8 +586,12 @@ const calAkurasiWMA3 = () => {
   const resMSE = parseFloat(sumDtFtSquared / n).toFixed(2);
 
   // Hitung MAPE
-  const sumDtFtDivDt = dataDtFtDivDt.reduce((total, current) => total + current.nilai, 0);
-  const resMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  const sumDtFtDivDt = dataDtFtDivDt.reduce(
+    (total, current) => total + current.nilai,
+    0
+  );
+  const hasilMAPE = parseFloat(sumDtFtDivDt / n).toFixed(2);
+  const resMAPE = hasilMAPE * 100;
 
   // Hitung SE
   const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
@@ -530,7 +601,7 @@ const calAkurasiWMA3 = () => {
   const resAcc = 100 - resMAPE;
 
   // Tampilkan hasil
-  const tableBody = document.getElementById("tabel-akurasi");
+  const tableBody = document.getElementById("tabel-akurasi-wma");
   tableBody.innerHTML = `
     <thead>
       <tr class="text-center table-dark">
@@ -556,13 +627,85 @@ const calAkurasiWMA3 = () => {
         <td class="text-center table-info">${resSE}</td>
       </tr>
       <tr>
-        <td>Akurasi</td>
-        <td class="text-center table-primary">${resAcc}%</td>
+        <td class="table-light">Akurasi</td>
+        <td class="text-center table-info">${resAcc}%</td>
       </tr>
     </tbody>
   `;
+
+  // Tampilkan grafik
+  tampilGrafikWMA(dataWMA, resAvgPrediksi);
 };
 
+// fungsi grafik WMA
+const tampilGrafikWMA = (dataWMA, resAvgPrediksi) => {
+  const bulan = dataWMA.map((data) => data.bulan);
+  const prediksi = dataWMA.map((data) => data.prediksi);
+
+  // Hapus grafik sebelumnya jika ada
+  const existingChart = document.getElementById("grafikWMA");
+  if (existingChart) {
+    existingChart.remove();
+  }
+
+  // Buat elemen canvas baru untuk grafik
+  const canvas = document.createElement("canvas");
+  canvas.id = "grafikWMA";
+  canvas.classList.add("w-100");
+  const chartContainer = document.getElementById("chartContainerWMA");
+  chartContainer.appendChild(canvas);
+
+  const ctx = canvas.getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: bulan,
+      datasets: [
+        {
+          label: "Prediksi WMA",
+          data: prediksi,
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+        },
+        {
+          label: "Rata-rata Prediksi WMA",
+          data: Array(bulan.length).fill(resAvgPrediksi),
+          fill: false,
+          borderColor: "rgb(255, 99, 132)",
+          tension: 0.1,
+          borderDash: [5, 5],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Grafik Prediksi WMA",
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: "Bulan",
+          },
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: "Nilai Penjualan",
+          },
+        },
+      },
+    },
+  });
+};
 
 // event listener
 tambahButton.addEventListener("click", addDataPenjualan);
