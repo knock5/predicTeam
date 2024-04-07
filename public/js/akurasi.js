@@ -371,27 +371,27 @@ const calAkurasiMA3 = () => {
     </thead>
     <tbody>
        <tr>
-        <td class="table-light">AVG Prediksi</td>
+        <td class="table-light">AVG Prediksi (Rata-rata seluruh prediksi)</td>
         <td class="text-center table-info">${resAvgPrediksi}</td>
       </tr>
       <tr>
-        <td class="table-light">n</td>
+        <td class="table-light">n (Jumlah periode dalam rata-rata bergerak)</td>
         <td class="text-center table-info">${n}</td>
       </tr>
       <tr>
-        <td class="table-light">MAD</td>
+        <td class="table-light">MAD (Mean Absolute Deviation)</td>
         <td class="text-center table-info">${resMAD}</td>
       </tr>
       <tr>
-        <td class="table-light">MSE</td>
+        <td class="table-light">MSE (Mean Squared Error)</td>
         <td class="text-center table-info">${resMSE}</td>
       </tr>
       <tr>
-        <td class="table-light">MAPE</td>
+        <td class="table-light">MAPE (Mean Absolute Precent Error)</td>
         <td class="text-center table-info">${resMAPE}%</td>
       </tr>
       <tr>
-        <td class="table-light">SE</td>
+        <td class="table-light">SE (Standard Error)</td>
         <td class="text-center table-info">${resSE}</td>
       </tr>
       <tr>
@@ -401,13 +401,15 @@ const calAkurasiMA3 = () => {
     </tbody>
   `;
 
-  tampilGrafikMA(dataMA, resAvgPrediksi);
+  tampilGrafikMA(dataMA, resAvgPrediksi, resData);
 };
 
 // fungsi grafik MA
-const tampilGrafikMA = (dataMA, resAvgPrediksi) => {
+const tampilGrafikMA = (dataMA, resAvgPrediksi, resData) => {
   const bulan = dataMA.map((data) => data.bulan);
   const prediksi = dataMA.map((data) => data.prediksi);
+  const dataAktual = resData.slice(3);
+  const data = dataAktual.map((data) => data.penjualan);
 
   // Hapus grafik sebelumnya jika ada
   const existingChart = document.getElementById("grafikMA");
@@ -443,6 +445,13 @@ const tampilGrafikMA = (dataMA, resAvgPrediksi) => {
           borderColor: "rgb(255, 99, 132)",
           tension: 0.1,
           borderDash: [5, 5],
+        },
+        {
+          label: "Penjualan Aktual",
+          data: data,
+          fill: false,
+          borderColor: "rgb(0, 181, 105)",
+          tension: 0.1,
         },
       ],
     },
@@ -613,27 +622,27 @@ const calAkurasiWMA3 = () => {
     </thead>
     <tbody>
       <tr>
-        <td class="table-light">AVG Prediksi</td>
+        <td class="table-light">AVG Prediksi (Rata-rata seluruh prediksi)</td>
         <td class="text-center table-info">${resAvgPrediksi}</td>
       </tr>
       <tr>
-        <td class="table-light">n</td>
+        <td class="table-light">n (Jumlah periode dalam rata-rata bergerak)</td>
         <td class="text-center table-info">${n}</td>
       </tr>
       <tr>
-        <td class="table-light">MAD</td>
+        <td class="table-light">MAD (Mean Absolute Deviation)</td>
         <td class="text-center table-info">${resMAD}</td>
       </tr>
       <tr>
-        <td class="table-light">MSE</td>
+        <td class="table-light">MSE (Mean Squared Error)</td>
         <td class="text-center table-info">${resMSE}</td>
       </tr>
       <tr>
-        <td class="table-light">MAPE</td>
+        <td class="table-light">MAPE (Mean Absolute Percent Error)</td>
         <td class="text-center table-info">${resMAPE}%</td>
       </tr>
       <tr>
-        <td class="table-light">SE</td>
+        <td class="table-light">SE (Standard Error)</td>
         <td class="text-center table-info">${resSE}</td>
       </tr>
       <tr>
@@ -644,13 +653,15 @@ const calAkurasiWMA3 = () => {
   `;
 
   // Tampilkan grafik
-  tampilGrafikWMA(dataWMA, resAvgPrediksi);
+  tampilGrafikWMA(dataWMA, resAvgPrediksi, resData);
 };
 
 // fungsi grafik WMA
-const tampilGrafikWMA = (dataWMA, resAvgPrediksi) => {
+const tampilGrafikWMA = (dataWMA, resAvgPrediksi, resData) => {
   const bulan = dataWMA.map((data) => data.bulan);
   const prediksi = dataWMA.map((data) => data.prediksi);
+  const dataAktual = resData.slice(3);
+  const data = dataAktual.map((data) => data.penjualan);
 
   // Hapus grafik sebelumnya jika ada
   const existingChart = document.getElementById("grafikWMA");
@@ -680,12 +691,19 @@ const tampilGrafikWMA = (dataWMA, resAvgPrediksi) => {
           tension: 0.1,
         },
         {
-          label: "Rata-rata Prediksi WMA",
+          label: "AVG Prediksi WMA",
           data: Array(bulan.length).fill(resAvgPrediksi),
           fill: false,
           borderColor: "rgb(255, 99, 132)",
           tension: 0.1,
           borderDash: [5, 5],
+        },
+        {
+          label: "Penjualan Aktual",
+          data: data,
+          fill: false,
+          borderColor: "rgb(0, 181, 105)",
+          tension: 0.1,
         },
       ],
     },
