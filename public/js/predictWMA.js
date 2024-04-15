@@ -50,7 +50,6 @@ function updateInputFieldsMA() {
         const inputValue = input.value.trim();
         return inputValue !== "" && inputValue.match(/^\d+$/);
       });
-      console.log(inputValue);
       // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
       predictButton1.disabled = !isValidInputs1;
     });
@@ -76,47 +75,65 @@ function predictWMA() {
   if (ordeValue === 3) {
     weights = [0.5, 0.3, 0.2]; // Bobot untuk 3 periode
   } else if (ordeValue === 5) {
-    weights = [0.2, 0.3, 0.2, 0.1, 0.2]; // Bobot untuk 5 periode
+    weights = [0.3, 0.2, 0.2, 0.2, 0.1]; // Bobot untuk 5 periode
   } else if (ordeValue === 7) {
-    weights = [0.1, 0.15, 0.2, 0.15, 0.1, 0.15, 0.15]; // Bobot untuk 7 periode
+    weights = [0.2, 0.15, 0.15, 0.15, 0.15, 0.1, 0.1]; // Bobot untuk 7 periode
   }
 
   // hitung weighted moving average
-  let weightedSum = 0;
+  const dataWMA = [];
 
   let tableContent = "";
 
   for (let i = 0; i < weights.length && i < data.length; i++) {
-    weightedSum += data[data.length - 1 - i] * weights[i];
-    tableContent += `
-    <tr>
-    <td class="col-7 table-info">Bulan ${i + 1}</td>
-    <td>${data[data.length - 1 - i]}</td>
-    <td>${weights[i]}</td></tr>`;
-  }
-  const totalSales = data.reduce((acc, curr) => acc + curr, 0);
-  const toRoundedResult = Math.round(weightedSum);
-  let tableContent0 = `<tr>
-  <th class="col-7 table-info">Jumlah Orde</th>
-  <td class="col-5" colspan="2" >${ordeValue} Bulan</td>
-  </td>
-</tr>
-<tr>
-<th class="col-7 table-info">Periode</th>
-                <th class="col-4 table-info">Data Pejualan</th>
-                <th class="col-2 table-info">Bobot</th>
-              </tr>
-`;
-  let tableContent1 = `
+    const hasil = data[data.length - 1 - i] * weights[i];
 
-<tr>
-  <th class="col-7 table-info">Total Seluruh Penjualan</th>
-  <td class="col-5"  colspan="2">${totalSales}</td>
-</tr>
-<tr>
-  <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
-  <td class="col-5" colspan="2">${toRoundedResult}</td>
-</tr>`;
+    const newData = {
+      penjualan: data[data.length - 1 - i],
+      bobot: weights[i],
+      hasil: hasil,
+    };
+
+    dataWMA.push(newData);
+
+    tableContent += `
+      <tr>
+        <td class="col-7 table-info">Bulan ${i + 1}</td>
+        <td>${data[i]}</td>
+        <td>${weights[weights.length - 1 - i]}</td>
+      </tr>`;
+  }
+
+  const calWMA = dataWMA.reduce((total, data) => total + data.hasil, 0);
+  const resWMA = Math.round(calWMA);
+
+  const resTotalPenjualan = dataWMA.reduce(
+    (total, data) => total + data.penjualan,
+    0
+  );
+
+  let tableContent0 = `
+      <tr>
+        <th class="col-7 table-info">Jumlah Orde</th>
+        <td class="col-5" colspan="2">${ordeValue} Bulan</td>
+      </tr>
+      <tr>
+        <th class="col-7 table-info">Periode</th>
+        <th class="col-4 table-info">Data Penjualan</th>
+        <th class="col-2 table-info">Bobot</th>
+      </tr>
+    `;
+
+  let tableContent1 = `
+      <tr>
+        <th class="col-7 table-info">Total Seluruh Penjualan</th>
+        <td class="col-5"  colspan="2">${resTotalPenjualan}</td>
+      </tr>
+      <tr>
+        <th class="col-7 table-info">Hasil Prediksi (Bulan Depan)</th>
+        <td class="col-5" colspan="2">${resWMA}</td>
+      </tr>
+    `;
 
   tableBody.innerHTML = tableContent0 + tableContent + tableContent1;
 }
