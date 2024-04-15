@@ -354,6 +354,7 @@ const calAkurasiMA3 = () => {
   // %MAPE = (SUM(Dt-Ft)/Dt) / n
   const valMAPE = parseFloat(sumDtFtDivDt / n).toFixed(4);
   const resMAPE = valMAPE * 100;
+  const resMAPERound = resMAPE.toFixed(2);
   // SE = (SUM(Dt-Ft)^2 / (n - 2))
   const calSE = Math.sqrt(sumDtFtSquared / (n - 2));
   const resSE = parseFloat(calSE).toFixed(2);
@@ -388,7 +389,7 @@ const calAkurasiMA3 = () => {
       </tr>
       <tr>
         <td class="table-light">MAPE (Mean Absolute Precent Error)</td>
-        <td class="text-center table-info">${resMAPE}%</td>
+        <td class="text-center table-info">${resMAPERound}%</td>
       </tr>
       <tr>
         <td class="table-light">SE (Standard Error)</td>
