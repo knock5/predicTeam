@@ -1,227 +1,109 @@
 <% layout('layouts/app') %>
-<div class="container">
-  <div class="py-3">
-    <a href="/menu">
-      <button class="btn btn-warning">Back</button>
-    </a>
+<div class="container pb-5">
+  <div class="row pt-3 align-items-center justify-content-between">
+    <div class="col-md-2">
+      <a href="/menu">
+        <button class="btn btn-warning">Back</button>
+      </a>
+    </div>
+    <div class="col-md-8 text-center">
+      <h2>Linear Regression Prediction</h2>
+    </div>
+    <div class="col-md-2"></div>
   </div>
-  <div class="col-8">
+
+  <div class="row pt-3">
+    <p class="pt-2 text-center">
+      Anda dapat melakukan prediksi penjualan bulan berikutnya berdasarkan data
+      penjualan yang telah ada. Silakan masukkan angka bulan yang ingin Anda
+      prediksi penjualannya pada kolom yang tersedia di bawah. Setelah
+      memasukkan angka bulan, klik tombol 'Perdiksi' untuk melihat hasil
+      prediksi. Hasil prediksi akan ditampilkan dalam sebuah modal bersama
+      dengan rincian perhitungan Linear Regression yang dilakukan.
+    </p>
+    <p class="text-center">
+      Data penjualan ini mengacu pada data yang terdapat di halaman akurasi,
+      Anda dapat mengubahnya sesuai kebutuhan.
+    </p>
+  </div>
+  <!-- Tabel untuk menampilkan data penjualan -->
+  <div class="row py-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div class="wrap-table">
+        <h4 class="text-center py-2">Data Aktual Penjualan</h4>
+        <!-- data tabel penjualan -->
+        <table
+          class="table table-bordered border-primary table-striped"
+          id="table-penjualan"
+        ></table>
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+
+  <div class="py-3">
     <div class="text-center">
-      <h2 class="mb-4">Linear Regression Prediction</h2>
+      <p>Masukkan angka bulan yang ingin diprediksi penjualannya</p>
+    </div>
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <input
+          type="number"
+          min="0"
+          class="form-control"
+          id="value-x"
+          required
+        />
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+    <div class="text-center py-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="predict-button"
+        data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop"
+        disabled
+      >
+        Perdiksi
+      </button>
     </div>
   </div>
-
-  <div class="form-group">
-    <label for="orde">Pilih Orde:</label>
-    <select class="form-control" id="orde">
-      <option value="2">2</option>
-      <option value="4">4</option>
-      <option value="6">6</option>
-      <!-- Add more options if needed -->
-    </select>
-  </div>
-
-  <div id="input-container" class="row">
-    <!-- Input fields will be dynamically added here -->
-  </div>
-
-  <button    type="button"
-  class="btn btn-primary"
-  id="predict-button"
-  data-bs-toggle="modal"
-  data-bs-target="#staticBackdrop"
-  disabled>Predict</button>
 </div>
 
 <!-- Modal for Prediction Results -->
-<div class="modal fade"
-id="staticBackdrop"
-data-bs-backdrop="static"
-data-bs-keyboard="false"
-tabindex="-1"
-aria-labelledby="staticBackdropLabel"
-aria-hidden="true">
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="prediction-modal-title">Prediction Results</h5>
+        <h5 class="modal-title" id="prediction-modal-title">Hasil Prediksi</h5>
         <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
         <table class="table table-bordered">
-         
           <tbody id="modal-table-body">
             <!-- Prediction results will be dynamically added here -->
-           
           </tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
-</div>
-<script>
-  const ordeSelect = document.getElementById("orde");
-const inputContainer = document.getElementById("input-container");
-const predictButton = document.getElementById("predict-button");
 
-
-// Menjalankan fungsi untuk menampilkan input orde secara default
-predictButton.addEventListener("click", predictLinearRegression);
-// prediksi page
-ordeSelect.addEventListener("change", updateInputFieldsLR);
-
-function updateInputFieldsLR() {
-  const ordeValue = parseInt(ordeSelect.value);
-  inputContainer.innerHTML = "";
-
-  for (let i = 1; i <= ordeValue; i++) {
-    const inputGroup = document.createElement("div");
-    inputGroup.classList.add("col-md-2", "mb-3");
-    inputGroup.innerHTML = `
-    <input type="text" min="0" class="form-control dataInput" id="data${i}" value="${i}" name="data${i}" required hidden>
-    <label for="dataY${i}" class="form-label">Data bulan ke-${i}</label>
-    <input type="text" min="0" class="form-control dataInput" id="dataY${i}" name="dataY${i}" required>
-    <div class="valid-feedback">
-      Okaii!
-    </div>
-    <div class="invalid-feedback">
-      Harap masukkan angka!
-    </div>
-        `;
-    inputContainer.appendChild(inputGroup);
-  }
-  const dataInputs = document.querySelectorAll(".dataInput");
-
-  // Ambil tombol Prediksi
-  const predictButton = document.getElementById("predict-button");
-
-  // Tambahkan event listener pada setiap input field
-  dataInputs.forEach((input) => {
-    input.addEventListener("input", function () {
-      const inputValue = input.value.trim();
-
-      // Validasi input: pastikan input adalah angka
-      if (!inputValue.match(/^\d+$/)) {
-        input.classList.add("is-invalid");
-        input.classList.remove("is-valid");
-      } else {
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-      }
-
-      // Cek apakah ada input field yang tidak valid atau kosong
-      const isValidInputs = Array.from(dataInputs).every((input) => {
-        const inputValue = input.value.trim();
-        return inputValue !== "" && inputValue.match(/^\d+$/);
-      });
-      // Disable atau enable tombol Prediksi berdasarkan hasil validasi input
-      predictButton.disabled = !isValidInputs;
-    });
-  });
-}
-updateInputFieldsLR();
-
-function predictLinearRegression() {
-  const ordeValue = parseInt(ordeSelect.value);
-  const tableBody = document.getElementById("modal-table-body");
-  
-
-  const dataX = [];
-  const dataY = [];
-
-  for (let i = 1; i <= ordeValue; i++) {
-    const inputX = document.getElementById(`data${i}`);
-    const inputY = document.getElementById(`dataY${i}`);
-    if (inputX && inputY) {
-      const valueX = parseInt(inputX.value);
-      const valueY = parseInt(inputY.value);
-      if (!isNaN(valueX) && !isNaN(valueY)) {
-        dataX.push(valueX);
-        dataY.push(valueY);
-      }
-    }
-  }
-  const n = dataX.length;
-  // Hitung rata-rata dari dataX dan data
-
-  // Hitung kemiringan (b) menggunakan formula yang diberikan
-  // Hitung Σ(xy) dengan reduce
-const sumXY = dataX.reduce((acc, x, i) => acc + x * dataY[i], 0);
-// Hitung Σ(x^2) dengan reduce
-const sumXSquare = dataX.reduce((acc, x) => acc + x * x, 0);
-const jm= dataY.reduce((acc, x) => acc + x, 0); 
-// Hitung rata-rata dari nilai x dan nilai y
-const meanX = dataX.reduce((acc, x) => acc + x, 0) / n;
-const meanY = dataY.reduce((acc, y) => acc + y, 0) / n;
-const pp = 14;
-// Hitung b
-const b = (sumXY -( n * meanX * meanY)) / (sumXSquare - (n * meanX * meanX));
-
-// console.log(b);
-
-  // Hitung perpotongan (a)
-  const a = meanY - (b * meanX);
-  
-  // Hitung nilai prediksi (y) untuk setiap data X
-  // const predictedValues = DataX.map((x) => a + b * x);
-  const predictedValues = Math.round(a + (b * pp));
-
-  // Menampilkan hasil prediksi dalam tabel
-  let tableContent = `
-    <tr>
-      <th class="col-7 table-info">bulan(X)</th>
-      <th class="col-4 table-info">banyak data(Y)</th>
-    </tr>
-  `;
-  for (let i = 0; i < n; i++) {
-    tableContent += `
-      <tr>
-        <td>${dataX[i]}</td>
-        <td>${dataY[i]}</td>
-      </tr>
-    `;
-  }
-
-  tableContent += `
-  <tr>
-              <td>kemiringan(b) </td>
-             <td id="b">${b}</td>
-            </tr>
-            <tr>
-              <td>potongan(a) </td>
-              <td id="a">${a}</td>
-            </tr>
-    <tr>
-      <td>total data</td>
-      <td>${jm}</td>
-    </tr>
-    <tr>
-      <td>Hasil Prediski</td>
-      <td>${predictedValues}</td>
-    </tr>
-   
-  `;
-
-  tableBody.innerHTML = tableContent;
-}
-
-function bulan() {
-  const bulanValue = document.getElementById("bulan").value;
-  const hasil = document.getElementById("bulan");
-  const b = document.getElementById("b").innerHTML;
-  const a = document.getElementById("a").innerHTML
-  
-  const hh = Math.round(a + (b * bulanValue));
-  console.log(hh)
-  console.log(b)
-  console.log(a)
-  console.log(bulanValue)
-  hasil.innerHTML = hh;
-}
-</script>
+<script src="/js/predictLR.js"></script>
