@@ -116,6 +116,7 @@ const calPredictLR = () => {
 
   const resYbx = parseFloat((b * xValue).toFixed(2));
   const y = a + resYbx;
+  const resY = Math.round(y);
 
   // Buat tabel untuk menampilkan hasil perhitungan
   const tableHTML = `
@@ -154,7 +155,7 @@ const calPredictLR = () => {
       </tbody>
     </table>
     <h4>Hasil Prediksi</h4>
-    <p>Hasil Prediksi (Y): ${y}</p>
+    <p>Hasil Prediksi pada bulan (${xValue}): ${resY} Penjualan</p>
   `;
 
   // Tampilkan tabel hasil perhitungan pada modal
