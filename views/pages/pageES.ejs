@@ -1,13 +1,107 @@
 <% layout('layouts/app') %>
 
 <div class="container">
-  <div class="py-3">
-    <a href="/menu">
-      <button class="btn btn-warning">Back</button>
-    </a>
+  <div class="row pt-4 pb-2 justify-content-center align-items-center">
+    <div class="col-md-3">
+      <a href="/menu">
+        <button class="btn btn-warning">Back</button>
+      </a>
+    </div>
+    <div class="col-md-8">
+      <h2>Exponential Smoothing (ES)</h2>
+    </div>
+    <div class="col-md-2"></div>
   </div>
 
-  <div class="py-3">
-    <h2>ES Page</h2>
+  <div class="py-2">
+    <p class="pt-2 text-center">
+      Anda dapat melakukan prediksi penjualan bulan berikutnya berdasarkan data
+      penjualan yang telah ada. Data aktual penjualan didapatkan dari halaman
+      akurasi, Anda dapat menyesuaikan data pada halaman tersebut sesuai
+      kebutuhan. Klik tombol 'Perdiksi' untuk melihat hasil prediksi bulan
+      berikutnya.
+    </p>
+
+    <div class="row justify-content-center">
+      <div class="text-center">
+        <p>Rumus:</p>
+        <img src="/assets/rumusES.png" class="w-50" alt="rumusES" />
+      </div>
+    </div>
+
+    <div class="row pt-3 justify-content-center align-items-center">
+      <div class="col text-center">
+        <p>Keterangan:</p>
+        <img src="/assets/ketES.png" class="w-50" alt="keterangan ES" />
+      </div>
+      <div class="col text-center">
+        <p>Rumus Alpha:</p>
+        <img src="/assets/alphaES.png" alt="rumus alpha ES" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabel untuk menampilkan data penjualan -->
+  <div class="row pt-2 pb-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <div class="wrap-table">
+        <h4 class="text-center py-2">Data Aktual Penjualan</h4>
+        <!-- data tabel penjualan -->
+        <table
+          class="table table-bordered border-primary table-striped"
+          id="table-penjualan"
+        ></table>
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+
+  <div class="pt-2 pb-4 text-center">
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="predict-button"
+      data-bs-toggle="modal"
+      data-bs-target="#staticBackdrop"
+    >
+      Perdiksi
+    </button>
+  </div>
+
+  <!-- Modal for Prediction Results -->
+  <div
+    class="modal fade"
+    id="staticBackdrop"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="prediction-modal-title">
+            Hasil Prediksi
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+            <tbody id="modal-table-body">
+              <!-- Prediction results will be dynamically added here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<script src="/js/predictES.js"></script>
