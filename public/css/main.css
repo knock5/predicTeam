@@ -165,3 +165,27 @@ a {
     transform: translate(-100%, -100%) translate3d(0, 0, 0);
   }
 }
+
+@media (max-width: 768px) {
+  .welcome-banner {
+    top: 50%;
+    width: 90%;
+    padding: 15px;
+  }
+
+  .navbar-brand,
+  .nav-link {
+    margin: 0 5px;
+    font-size: 16px;
+  }
+
+  .bg-banner {
+    height: 80vh;
+  }
+
+  .btn-banner,
+  .exploreBtn {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+}
