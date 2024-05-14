@@ -113,8 +113,6 @@ const addDataPenjualan = () => {
   }
 
   sessionData.push(newData);
-  console.log(newData.penjualan);
-  console.log(typeof newData.penjualan);
   sessionStorage.setItem("dataPenjualan", JSON.stringify(storedData));
 
   inputBulan.value = "";
@@ -360,6 +358,17 @@ const calAkurasiMA3 = () => {
   const resSE = parseFloat(calSE).toFixed(2);
   // Hasil akurasi = 100% - MAPE
   const resAcc = 100 - resMAPE;
+
+  console.log("MA3: ", dataMA);
+  console.log("Dt-Ft: ", dataDtFt);
+  console.log("(Dt-Ft)^2: ", dataDtFtSquared);
+  console.log("(Dt-Ft)/Dt: ", dataDtFtDivDt);
+  console.log("n: ", n);
+  console.log("MAD: ", resMAD);
+  console.log("MSE: ", resMSE);
+  console.log("MAPE: ", resMAPE);
+  console.log("SE: ", resSE);
+  console.log("Akurasi: ", resAcc);
 
   // custom DOM tabel akurasi
   const tableBody = document.getElementById("tabel-akurasi-ma");
