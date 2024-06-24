@@ -4,6 +4,8 @@
 
 Aplikasi ini dibuat dengan memanfaatkan database lokal (dari browser) yaitu menggunakan session storage dan local storage. Pastikan Anda memiliki browser yang telah mendukung fitur tersebut.
 
+<p>Project ini bisa jadi akan kami kembangkan lebih lanjut mengingat masih ada beberapa fitur yang belum diimplementasikan.</p>
+
 ### **`Ketentuan Implementasi Repository:`**
 
 - Silahkan clone repository yang sudah disediakan.
